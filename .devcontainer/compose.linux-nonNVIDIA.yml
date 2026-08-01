@@ -1,3 +1,4 @@
+# Configures the Linux non-NVIDIA profile with X11 and DRM GPU acceleration for integrated graphics.
 services:
   dev:
     network_mode: "host"

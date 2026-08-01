@@ -1,3 +1,7 @@
+# Defines the shared Dev Container service, image, workspace bind mount, and SSH forwarding.
+# This is the base compose file which is used with every profile. SSH keys directory binding
+# allows developers to make git commits inside the dev container if they wanted.
+# Most importantly, it binds THIS working directory into /home/qadt/AEAC2026
 name: qadt-devcontainer
 services:
   dev:

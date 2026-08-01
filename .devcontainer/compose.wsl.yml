@@ -1,3 +1,4 @@
+# Configures the WSL (Windows Subsystem for Linux) profile with display, audio, and QGroundControl networking.
 services:
   dev:
     environment:

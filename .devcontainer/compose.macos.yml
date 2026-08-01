@@ -1,3 +1,5 @@
+# Configures the macOS profile to run the container GUI through XQuartz. 
+# Note: macOS users can not see Gazebo simulations as XQuartz exposes an OpenGL driver which is out of date with Gazebo.
 services:
   dev:
     platform: linux/arm64 # Optional
@@ -9,7 +11,6 @@ services:
       QT_X11_NO_MITSHM: "1"
       QT_QPA_PLATFORM: "xcb"
 
-    # On macOS, install XQuartz with 'brew install XQuartz' then run the following:
-    # xhost +localhost
-    # This lets the container connect over TCP via host.docker.internal:0
-
+# On macOS, install XQuartz with 'brew install XQuartz' then run the following:
+# xhost +localhost
+# This lets the container connect over TCP via host.docker.internal:0

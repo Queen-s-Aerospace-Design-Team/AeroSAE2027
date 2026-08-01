@@ -1,4 +1,24 @@
 #!/usr/bin/env bash
+
+# --- How this script works ---
+# Summary:  Runs before the Dev Containers extension opens into the container. 
+#           Detects the host platform, prepares required GUI or NVIDIA tooling, and selects its Compose profile.
+#
+# Possible Profiles:
+#           Linux NVIDIA: installs nvidia container toolkit
+#           Linux non-NVIDIA: does nothing
+#           macOS: installs and opens XQuartz
+#           WSL: does nothing
+#
+# PROFILE is a variable which controls which compose.$PROFILE.yml to pick from
+# Options:  linux-NVIDIA
+#           linux-nonNVIDIA
+#           macos
+#           wsl
+# At the end of the script, the command, 'cp .devcontainer/compose.${PROFILE}.yml .devcontainer/compose.active.yml',
+# copies the currently selected Docker Compose profile to a 'compose.active.yml' (git-ignored).
+# Both 'compose.base.yml' and 'compose.active.yml' are used in the devcontainer.json "dockerComposeFile" variable.
+
 set -e
 
 general() {

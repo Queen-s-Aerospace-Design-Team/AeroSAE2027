@@ -1,3 +1,14 @@
+// Defines the Dev Container service, startup and initialize scripts, editor settings, and extensions.
+// It can also control the extensions which are installed into the vscode container and you can control the settings of those extensions.
+// For example, this installs the C/C++ Extension, Python Extension. 
+// Under customizations/vscode/settings you may control each settin. For example,
+// the following defines what paths the python extension searchs for packages under:
+// "python.analysis.extraPaths": [
+//     "/opt/ros/humble/lib/python3.10/site-packages",
+//     "${workspaceFolder}/ros_ws/install/px4_msgs/local/lib/python3.10/dist-packages",
+//     "${workspaceFolder}/ros_ws/src"
+// ]
+
 {
     "name": "QADT Dev Container (PX4)",
     "dockerComposeFile": [

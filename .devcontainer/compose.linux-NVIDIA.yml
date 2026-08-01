@@ -1,3 +1,4 @@
+# Configures the Linux NVIDIA profile with GPU access and host X11 and audio forwarding for NVIDIA hardware.
 services:
   dev:
     gpus: all
@@ -15,4 +16,3 @@ services:
       - "${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native"
 
 # All prerequistes to use the nivida container toolkit are under the `initialize.sh` script ran upon entering the container.
-
