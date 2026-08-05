@@ -9,7 +9,11 @@ services:
       QT_QPA_PLATFORM: xcb # Forced x11 rendering so gazebo doesn't crash. Container version of Gazebo doesn't work with wayland
       GDK_BACKEND: x11
     volumes:
-      - "${HOME}/.Xauthority:/home/qadt/.Xauthority"
+      # ${XAUTHORITY} is the real cookie file to bind: on classic X11 sessions this is
+      # usually ~/.Xauthority anyway, but under XWayland (e.g. GNOME on Wayland) it's a
+      # per-session file elsewhere (e.g. /run/user/<uid>/.mutter-Xwaylandauth.*), and
+      # ~/.Xauthority may not exist at all.
+      - "${XAUTHORITY:-${HOME}/.Xauthority}:/home/qadt/.Xauthority"
       - "/tmp/.X11-unix:/tmp/.X11-unix:rw" # fastest, unix socket
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128" # Render-only DRM node (safe GPU acceleration; no display control)

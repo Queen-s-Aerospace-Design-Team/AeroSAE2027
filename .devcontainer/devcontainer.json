@@ -4,8 +4,8 @@
 // Under customizations/vscode/settings you may control each settin. For example,
 // the following defines what paths the python extension searchs for packages under:
 // "python.analysis.extraPaths": [
-//     "/opt/ros/humble/lib/python3.10/site-packages",
-//     "${workspaceFolder}/ros_ws/install/px4_msgs/local/lib/python3.10/dist-packages",
+//     "/opt/ros/jazzy/lib/python3.12/site-packages",
+//     "${workspaceFolder}/ros_ws/install/px4_msgs/local/lib/python3.12/dist-packages",
 //     "${workspaceFolder}/ros_ws/src"
 // ]
 
@@ -35,21 +35,21 @@
                 "python.analysis.useLibraryCodeForTypes": true,
                 "python.analysis.typeCheckingMode": "basic",
                 "python.analysis.extraPaths": [
-                    "/opt/ros/humble/lib/python3.10/site-packages",
-                    "${workspaceFolder}/ros_ws/install/px4_msgs/local/lib/python3.10/dist-packages",
+                    "/opt/ros/jazzy/lib/python3.12/site-packages",
+                    "${workspaceFolder}/ros_ws/install/px4_msgs/local/lib/python3.12/dist-packages",
                     "${workspaceFolder}/ros_ws/src"
                 ],
                 // C++
                 "C_Cpp.default.includePath": [
                     "${workspaceFolder}/ros_ws/src/**",
                     "${workspaceFolder}/ros_ws/install/px4_msgs/include/**",
-                    "/opt/ros/humble/include/**",
+                    "/opt/ros/jazzy/include/**",
                     "/usr/include/**"
                 ],
                 "C_Cpp.default.browse.path": [
                     "${workspaceFolder}/ros_ws/src/**",
                     "${workspaceFolder}/ros_ws/install/px4_msgs/include/**",
-                    "/opt/ros/humble/include/**"
+                    "/opt/ros/jazzy/include/**"
                 ],
                 "C_Cpp.default.browse.limitSymbolsToIncludedHeaders": true,
                 "C_Cpp.default.cStandard": "c17",

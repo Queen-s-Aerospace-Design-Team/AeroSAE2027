@@ -11,6 +11,6 @@ services:
     container_name: qadt-mission
 
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
+      bash -lc "source /opt/ros/jazzy/setup.bash &&
       source /home/qadt-deploy/AEAC2026/ros_ws/install/setup.bash &&
       ros2 run flight_missions orbit_location"

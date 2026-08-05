@@ -78,9 +78,15 @@ linux() {
         fi
     fi
 
-    if [ "$XDG_SESSION_TYPE" != "x11" ]; then
-        echo "Error: This script requires X11."
-        echo "Please log out and change your rendering mode to X11, then try again."
+    # Native X11 sessions pass this outright. Wayland sessions (increasingly the only
+    # option on newer hosts, e.g. Ubuntu 26.04) can still work via XWayland, which we
+    # accept as long as the socket the compose files actually bind-mount is live.
+    DISPLAY_NUM="${DISPLAY#*:}"
+    DISPLAY_NUM="${DISPLAY_NUM%%.*}"
+    if [ "$XDG_SESSION_TYPE" != "x11" ] && [ ! -S "/tmp/.X11-unix/X${DISPLAY_NUM}" ]; then
+        echo "Error: This script requires a working X11 display."
+        echo "No X11 session detected and no XWayland socket found at /tmp/.X11-unix/X${DISPLAY_NUM}."
+        echo "Please log out and change your rendering mode to X11 (or ensure XWayland is running), then try again."
         exit 1
     fi
 }

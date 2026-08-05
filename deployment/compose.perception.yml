@@ -20,7 +20,7 @@ services:
       NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
 
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
+      bash -lc "source /opt/ros/jazzy/setup.bash &&
       source /home/qadt-deploy/AEAC2026/ros_ws/install/setup.bash"
       
 # Note sure what scripts to run

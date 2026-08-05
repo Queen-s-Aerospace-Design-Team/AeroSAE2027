@@ -17,7 +17,7 @@ services:
       - /proc/device-tree/chosen:/proc/device-tree/chosen:ro
 
     command: >
-      bash -lc "source /opt/ros/humble/setup.bash &&
+      bash -lc "source /opt/ros/jazzy/setup.bash &&
       source /home/qadt-deploy/AEAC2026/ros_ws/install/setup.bash &&
       ros2 run hardware_controllers gimbal_controller --ros-args \
         -p dry_run:=false \
