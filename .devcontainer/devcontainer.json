@@ -17,7 +17,7 @@
     ],
     "service": "dev",
     "overrideCommand": true,
-    "workspaceFolder": "/home/qadt/${localWorkspaceFolderBasename}",
+    "workspaceFolder": "/home/qadt/AEAC2026",
     "remoteUser": "qadt",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {

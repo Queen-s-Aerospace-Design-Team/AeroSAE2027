@@ -12,6 +12,7 @@ QADT (Queen's Aerospace Design Team) AEAC 2026 software monorepo: drone autonomy
 - `.devcontainer/initialize.sh` runs before the container starts: it detects the host platform (linux-NVIDIA / linux-nonNVIDIA / macos / wsl) and copies the matching `.devcontainer/compose.<profile>.yml` to `compose.active.yml` (gitignored), which `devcontainer.json` composes together with `compose.base.yml`. This is a one-time file *copy*, not a symlink — if you edit a `compose.<profile>.yml`, rerun `initialize.sh` (or re-trigger "Reopen in Container") to regenerate `compose.active.yml`, or your edits silently won't take effect.
 - On the Linux profiles, `initialize.sh` requires a working X11 display for GUI passthrough (Gazebo, rviz2, etc.), but accepts XWayland too: it checks for either `XDG_SESSION_TYPE=x11` or a live socket at `/tmp/.X11-unix/X<N>`, so Wayland-default hosts (e.g. Ubuntu 24.04+ GNOME) work as long as XWayland is running.
 - `.devcontainer/postStart.sh` starts the Micro XRCE-DDS Agent (`MicroXRCEAgent udp4 -p 8888`) needed for PX4 ↔ ROS 2 communication.
+- `./scripts/manualCompose.sh` brings the devcontainer up/down from the terminal (runs `initialize.sh`, `docker compose up -d`, execs a shell) as an alternative to VSCode's "Reopen in Container".
 - Editor: format-on-save with `clang-format` is enabled for C/C++ inside the container; Python paths are pointed at `/opt/ros/jazzy/...`, the built `px4_msgs` install, and `ros_ws/src`.
 
 ## Common commands
@@ -54,6 +55,14 @@ pytest tests/test_pipeline.py::test_name   # single test
 ```
 
 Python ROS packages (`navigation_core`, `hardware_controllers`, `google_drive`) each carry an `ament_python`-style `test/` folder (`test_flake8.py`, `test_pep257.py`, `test_copyright.py`) run through `colcon test`, not directly via pytest.
+
+**If the repo (or its devcontainer mount path) is ever renamed** — e.g. the planned `AEAC2026` → `AeroSAE2027` rename — `colcon build` will fail with a `CMake Error: ... is different than the directory ... where CMakeCache.txt was created`. CMake bakes the absolute source/build path into `ros_ws/build/*/CMakeCache.txt` the first time it configures, and refuses to reuse a cache pointing at a path that no longer exists. Fix with a one-time clean rebuild — safe, since these are pure generated output:
+```bash
+cd ros_ws
+rm -rf build install log
+colcon build --symlink-install
+```
+Don't do this preemptively on every build/container rebuild — it defeats colcon's incremental build caching and PX4-related packages (`px4_msgs`, `px4_ros_com`, `flight_missions`) are slow to compile from scratch. Only needed once, right after a path change.
 
 ## Architecture
 
