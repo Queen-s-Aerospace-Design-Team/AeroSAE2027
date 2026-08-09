@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository purpose
 
-QADT (Queen's Aerospace Design Team) AEAC 2026 software monorepo: drone autonomy on PX4 + ROS 2 Jazzy, perception (ZED stereo camera), hardware control (gimbal/water-release payload), a Google Drive upload service, and Gazebo simulation assets. Everything is built and run inside a Docker dev container — there is no supported host-native build.
+QADT (Queen's Aerospace Design Team) AeroSAE 2027 software monorepo: drone autonomy on PX4 + ROS 2 Jazzy, perception (ZED stereo camera), hardware control (gimbal/water-release payload), a Google Drive upload service, and Gazebo simulation assets. Everything is built and run inside a Docker dev container — there is no supported host-native build.
 
 ## Development environment
 

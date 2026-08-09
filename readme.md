@@ -1,12 +1,12 @@
-# QADT AEAC 2026 Software Repository
+# QADT AeroSAE 2027 Software Repository
 
-The purpose of this repository is to house all software associated with development environments, containers, computer vision, autonomy, and more pertaining to the AEAC 2026 competition developed by **Queen's Aerospace Design Team (QADT)**.
+The purpose of this repository is to house all software associated with development environments, containers, computer vision, autonomy, and more pertaining to the AeroSAE 2027 competition developed by **Queen's Aerospace Design Team (QADT)**.
 
 ---
 
 # Development Environment Setup
 
-The below sections cover onboarding setups required to setup the QADT AEAC 2026 development environment for **WSL**, **dual boot Ubuntu Linux**, and **MacOS**.
+The below sections cover onboarding setups required to setup the QADT AeroSAE 2027 development environment for **WSL**, **dual boot Ubuntu Linux**, and **MacOS**.
 
 ---
 
@@ -117,7 +117,7 @@ It will ask you to create a **username** - I always do `abotticchio` or `[firstI
 
 ### Install Git in WSL
 
-You want git available in your Ubuntu shell so you can clone our AEAC2026 repo. Enter the following in WSL:
+You want git available in your Ubuntu shell so you can clone our AeroSAE2027 repo. Enter the following in WSL:
 
 ```bash
 sudo apt update && sudo apt install git -y
@@ -176,7 +176,7 @@ If you see this, then you're good to go!
 
 ### Clone the Repository
 
-Inside WSL, make a **`git`** directory in your **home (`~`)** directory. This is where we will clone AEAC2026 and other git repositories into. First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
+Inside WSL, make a **`git`** directory in your **home (`~`)** directory. This is where we will clone AeroSAE2027 and other git repositories into. First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
 
 Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH with `git clone <ssh_url>`. Your commands should look like this bellow:
 
@@ -184,7 +184,7 @@ Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH 
 cd ~
 mkdir git
 cd git
-git clone git@github.com:Queen-s-Aerospace-Design-Team/AEAC2026.git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
 ```
 
 Enter `Yes` if you are cloning with SSH for the first time (i.e. just after making an SSH key).
@@ -205,19 +205,19 @@ docker --version
 
 If this doesn't work, try restarting your environment by first quitting docker desktop, restarting WSL (press Cntrl + D in the WSL terminal to exit it), and try again.
 
-### Open the AEAC2026 repo in VSCode
+### Open the AeroSAE2027 repo in VSCode
 
-Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AEAC2026 repo in VSCode.
+Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AeroSAE2027 repo in VSCode.
 
 Personally, I like to do this using the terminal:
 
 ```bash
-cd ~/git/AEAC2026
+cd ~/git/AeroSAE2027
 code .  # 'code' means VSCode, and we supply '.' as the current directory 
         # for the location we want to open VSCode into
 ```
 
-We have a folder in the AEAC2026 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
+We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
 
 When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
@@ -318,24 +318,24 @@ Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH 
 cd ~
 mkdir git
 cd git
-git clone git@github.com:Queen-s-Aerospace-Design-Team/AEAC2026.git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
 ```
 
 If you’re cloning via SSH for the first time, you’ll be asked to confirm the connection — type **Yes** when prompted.
 
 ### Run the `setupLinux.sh` script
 
-Inside the AEAC2026 repo, navigate to the scripts directory and run the `setupLinux.sh` script. This will install all required software on Linux machines including Docker, VSCode and its necessary extensions, and QGroundControl.
+Inside the AeroSAE2027 repo, navigate to the scripts directory and run the `setupLinux.sh` script. This will install all required software on Linux machines including Docker, VSCode and its necessary extensions, and QGroundControl.
 
 ```bash
-cd ~/git/AEAC2026/scripts
+cd ~/git/AeroSAE2027/scripts
 ./setupLinux.sh
 ```
 
 Next, reboot your computer and open VSCode in the repo with:
 
 ```bash
-cd ~/git/AEAC2026
+cd ~/git/AeroSAE2027
 code .
 ```
 
@@ -377,7 +377,7 @@ brew --version
 
 ### Install Git with Homebrew
 
-You want git available in your MacOS terminal so you can clone our AEAC2026 repo. Now that Homebrew is installed, user it to install Git:
+You want git available in your MacOS terminal so you can clone our AeroSAE2027 repo. Now that Homebrew is installed, user it to install Git:
 
 ```bash
 brew install git
@@ -436,7 +436,7 @@ If you see this, then you're good to go!
 
 ### Clone the Repository
 
-Inside your **home directory** (`~`). This is where you'll keep the AEAC2026 repository and any others you clone in the future. 
+Inside your **home directory** (`~`). This is where you'll keep the AeroSAE2027 repository and any others you clone in the future. 
 
 First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
 
@@ -446,7 +446,7 @@ Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH 
 cd ~
 mkdir git
 cd git
-git clone git@github.com:Queen-s-Aerospace-Design-Team/AEAC2026.git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
 ```
 
 If you’re cloning via SSH for the first time, you’ll be asked to confirm the connection — type **Yes** when prompted.
@@ -466,19 +466,19 @@ docker --version
 
 If Docker commands don’t work immediately, try quitting and reopening Docker Desktop or restarting your terminal.
 
-### Open the AEAC2026 repo in VSCode
+### Open the AeroSAE2027 repo in VSCode
 
-Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AEAC2026 repo in VSCode.
+Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AeroSAE2027 repo in VSCode.
 
 Personally, I like to do this using the terminal:
 
 ```bash
-cd ~/git/AEAC2026
+cd ~/git/AeroSAE2027
 code .  # 'code' means VSCode, and we supply '.' as the current directory 
         # for the location we want to open VSCode into
 ```
 
-We have a folder in the AEAC2026 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
+We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
 
 When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
