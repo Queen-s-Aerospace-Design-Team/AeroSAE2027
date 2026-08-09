@@ -89,6 +89,18 @@ linux() {
         echo "Please log out and change your rendering mode to X11 (or ensure XWayland is running), then try again."
         exit 1
     fi
+
+    # Under XWayland, the compose files bind-mount whatever cookie file $XAUTHORITY
+    # currently points to (e.g. /run/user/<uid>/.mutter-Xwaylandauth.<random>). GNOME
+    # rotates that file on some session events (lock/unlock, compositor restart), which
+    # can leave an already-running container's mounted copy stale -> GUI apps fail with
+    # "Authorization required, but no authorization protocol specified" even though the
+    # mount itself looks fine. Relaxing local X11 access control sidesteps cookie-matching
+    # entirely instead of depending on the mount staying in sync. Local-socket-only, so
+    # this doesn't expose the display over the network.
+    if command -v xhost &>/dev/null; then
+        xhost +local: >/dev/null 2>&1 || true
+    fi
 }
 
 macos() {
