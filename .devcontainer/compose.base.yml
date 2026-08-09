@@ -1,7 +1,13 @@
 # Defines the shared Dev Container service, image, workspace bind mount, and SSH forwarding.
 # This is the base compose file which is used with every profile. SSH keys directory binding
 # allows developers to make git commits inside the dev container if they wanted.
-# Most importantly, it binds THIS working directory into /home/qadt/AEAC2026
+# Most importantly, it binds THIS working directory into /home/qadt/AEAC2026, regardless of
+# what the local clone directory is actually named on disk (a fork, a rename, etc.) — bind
+# mount source/target names don't need to match. This path is deliberately a fixed literal,
+# not templated: docker compose does not resolve devcontainer.json-only variables like
+# ${localWorkspaceFolderBasename} (that's a devcontainers-CLI-only substitution), and a fixed
+# path keeps every team member's container laid out identically, matching devcontainer.json's
+# "workspaceFolder" and the ROS_WS convention documented in CLAUDE.md.
 name: qadt-devcontainer
 services:
   dev:
