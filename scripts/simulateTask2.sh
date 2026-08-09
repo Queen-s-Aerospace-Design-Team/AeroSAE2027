@@ -19,7 +19,7 @@ set -euo pipefail
 SESSION="${TMUX_SESSION:-x500_depth_cam}"
 GZ_MODEL_NAME="x500_depth_0"
 
-GZ_WORLD_PATH="$HOME/AEAC2026/gz_worlds/aeac"
+GZ_WORLD_PATH="$HOME/AeroSAE2027/gz_worlds/aeac"
 
 PX4_TARGET="gz_x500_depth"
 PX4_DIR="$HOME/PX4-Autopilot"

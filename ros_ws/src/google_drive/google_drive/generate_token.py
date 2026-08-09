@@ -17,7 +17,7 @@ def find_repo_root() -> Path:
     and from this file's path.
 
     Expected layout:
-        AEAC2026/
+        AeroSAE2027/
         ├── .credentials/
         │   ├── credentials.json
         │   └── token.json

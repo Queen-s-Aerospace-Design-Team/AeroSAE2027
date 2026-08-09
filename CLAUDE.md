@@ -56,7 +56,7 @@ pytest tests/test_pipeline.py::test_name   # single test
 
 Python ROS packages (`navigation_core`, `hardware_controllers`, `google_drive`) each carry an `ament_python`-style `test/` folder (`test_flake8.py`, `test_pep257.py`, `test_copyright.py`) run through `colcon test`, not directly via pytest.
 
-**If the repo (or its devcontainer mount path) is ever renamed** — e.g. the planned `AEAC2026` → `AeroSAE2027` rename — `colcon build` will fail with a `CMake Error: ... is different than the directory ... where CMakeCache.txt was created`. CMake bakes the absolute source/build path into `ros_ws/build/*/CMakeCache.txt` the first time it configures, and refuses to reuse a cache pointing at a path that no longer exists. Fix with a one-time clean rebuild — safe, since these are pure generated output:
+**If the repo (or its devcontainer mount path) is ever renamed again** — e.g. next year's inevitable sequel to the `AEAC2026` → `AeroSAE2027` rename — `colcon build` will fail with a `CMake Error: ... is different than the directory ... where CMakeCache.txt was created`. CMake bakes the absolute source/build path into `ros_ws/build/*/CMakeCache.txt` the first time it configures, and refuses to reuse a cache pointing at a path that no longer exists. Fix with a one-time clean rebuild — safe, since these are pure generated output:
 ```bash
 cd ros_ws
 rm -rf build install log

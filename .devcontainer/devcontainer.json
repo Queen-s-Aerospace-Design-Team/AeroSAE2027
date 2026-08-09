@@ -17,7 +17,7 @@
     ],
     "service": "dev",
     "overrideCommand": true,
-    "workspaceFolder": "/home/qadt/AEAC2026",
+    "workspaceFolder": "/home/qadt/AeroSAE2027",
     "remoteUser": "qadt",
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
