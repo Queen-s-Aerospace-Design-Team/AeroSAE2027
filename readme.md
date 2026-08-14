@@ -494,8 +494,6 @@ After the container is open. **RESTART YOUR COMPUTER** to configure XQuartz (an 
 
 # Software Executive Team (2025/26)
 
-- **Max Dizy** $-$ *AEAC Co-Captain*
-- **Kalena McCloskey** $-$ *Software Director*
-- **Ethan Milburn** $-$ *Software Research (ICUAS) Manager*
-- **Matthew Lones** $-$ *Computer Vision Manager*
-- **Anthony Botticchio** $-$ *Autonomy Manager*
+- **Ben Roytblat** $-$ *Software Director*
+- **Jacob Wong** $-$ *Computer Vision Manager*
+- **Liam Shannon** $-$ *Autonomy Manager*
