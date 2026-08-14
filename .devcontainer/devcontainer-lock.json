@@ -1,5 +1,4 @@
 {
-  "//": "Pins the Dev Container feature versions and content digests for reproducible setup.",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "version": "2.5.7",
