@@ -492,7 +492,7 @@ After the container is open. **RESTART YOUR COMPUTER** to configure XQuartz (an 
 
 ---
 
-# Software Executive Team (2025/26)
+# Software Executive Team (2026/27)
 
 - **Ben Roytblat** $-$ *Software Director*
 - **Jacob Wong** $-$ *Computer Vision Manager*
