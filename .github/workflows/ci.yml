@@ -31,7 +31,7 @@ jobs:
     name: Secret scanning
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -56,7 +56,7 @@ jobs:
     name: Devcontainer config check
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Generate the active compose profile
         env:
@@ -64,14 +64,21 @@ jobs:
           XDG_SESSION_TYPE: x11
         run: bash .devcontainer/initialize.sh
 
-      - name: Validate the composed devcontainer stack
+      # Every profile is checked, not just the one initialize.sh picked. A runner
+      # always resolves to linux-nonNVIDIA, so without this loop a broken
+      # macos/wsl/NVIDIA profile would reach the developers who use it with CI
+      # still green. Display variables are unset here; `config` only parses.
+      - name: Validate every compose profile
         run: |
           set -euo pipefail
-          docker compose \
-            -f .devcontainer/compose.base.yml \
-            -f .devcontainer/compose.active.yml \
-            config > /dev/null
-          echo "compose.base.yml + compose.active.yml parse cleanly."
+          for profile in .devcontainer/compose.*.yml; do
+            case "$profile" in
+              *compose.base.yml|*compose.active.yml) continue ;;
+            esac
+            docker compose -f .devcontainer/compose.base.yml -f "$profile" config > /dev/null
+            echo "  OK  base + $(basename "$profile")"
+          done
+          echo "All compose profiles parse cleanly."
 
       - name: Check devcontainer.json agrees with the compose files
         run: |
@@ -113,7 +120,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: devcontainer-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Resolve dev container image
         run: |
@@ -193,7 +200,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: devcontainer-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Resolve dev container image
         run: |
