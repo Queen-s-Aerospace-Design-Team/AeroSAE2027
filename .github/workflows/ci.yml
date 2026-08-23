@@ -51,7 +51,7 @@ jobs:
 
   secret-scan:
     name: Secret scanning
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -83,7 +83,7 @@ jobs:
 
   version-pinning:
     name: Version pinning check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -152,7 +152,7 @@ jobs:
 
   devcontainer-build:
     name: Devcontainer config check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -207,7 +207,7 @@ jobs:
 
   smoke-test:
     name: Smoke test (container user check)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: devcontainer-build
     steps:
       - uses: actions/checkout@v4
@@ -259,7 +259,7 @@ jobs:
 
   colcon-build:
     name: Colcon build (ROS2 workspace)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: devcontainer-build
     steps:
       - uses: actions/checkout@v4
@@ -287,7 +287,7 @@ jobs:
 
   lint:
     name: Lint (Python + C++)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: devcontainer-build
     steps:
       - uses: actions/checkout@v4
