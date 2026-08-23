@@ -33,7 +33,7 @@ Mission::Mission( const std::string& nodeName, FinishPolicy finishPolicy )
     rclcpp::QoS bestEffortQoS = rclcpp::QoS( 10 ).best_effort();
 
     m_vehicleStatus_sub       = create_subscription<VehicleStatus>( "/fmu/out/vehicle_status", bestEffortQoS,
-                                                              std::bind( &Mission::onVehicleStatus, this, std::placeholders::_1 ) );
+                                                                    std::bind( &Mission::onVehicleStatus, this, std::placeholders::_1 ) );
     m_vehicleLandDetected_sub = create_subscription<VehicleLandDetected>(
         "/fmu/out/vehicle_land_detected", bestEffortQoS, std::bind( &Mission::onVehicleLandDetected, this, std::placeholders::_1 ) );
 
