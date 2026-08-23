@@ -2,6 +2,7 @@
 # Note: macOS users can not see Gazebo simulations as XQuartz exposes an OpenGL driver which is out of date with Gazebo.
 services:
   dev:
+  ohio
     platform: linux/arm64 # Optional
     network_mode: "host"
     environment:
