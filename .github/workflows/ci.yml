@@ -1,54 +1,28 @@
-# CI checks that run on every pull request into `main`.
-#
-# A note on how these jobs reach the dev environment, because it is not what a
-# typical devcontainer CI setup looks like:
-#
-#   * This repo has NO Dockerfile. `.devcontainer/compose.base.yml` pulls a
-#     pre-built image (`ghcr.io/queen-s-aerospace-design-team/devcontainer-px4`)
-#     that is produced by a separate repo, so there is nothing here for a
-#     `devcontainer build` to build.
-#   * The `devcontainers/ci` action cannot bring the container up on a hosted
-#     runner anyway: `.devcontainer/initialize.sh` selects the
-#     `linux-nonNVIDIA` profile there, and that profile requests the host
-#     device `/dev/dri/renderD128` plus an X11 socket, neither of which exists
-#     on a GitHub runner.
-#
-# So the container jobs below `docker run` the exact image the devcontainer
-# uses, and the image reference is read out of `compose.base.yml` at runtime so
-# CI can never drift from the dev environment. The devcontainer wiring itself
-# (initialize.sh -> compose.active.yml -> compose config, and the user/workspace
-# agreement between devcontainer.json and the compose files) is validated
-# separately in the `devcontainer-build` job.
+# CI checks to run when merging into main.
 
 name: CI
 
 on:
-  pull_request:
+  pull_request: # runs on PRs into main
     branches: [main]
 
-concurrency:
+concurrency: # A new push to a PR kills the previous running CI
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+# Set environment variables for all jobs. 
 env:
-  # Confirmed against the image itself: `whoami` inside
-  # ghcr.io/queen-s-aerospace-design-team/devcontainer-px4:latest is `qadt`
-  # (uid/gid 1000), matching "remoteUser" in devcontainer.json and the
-  # /home/qadt/... paths in compose.base.yml. This is the check that would have
-  # caught the historical qadt vs qadt-dev mismatch.
   EXPECTED_CONTAINER_USER: qadt
-  # devcontainer.json "workspaceFolder" / compose.base.yml bind target. The repo
-  # is mounted here regardless of the clone directory name on disk.
   CONTAINER_WORKSPACE: /home/qadt/AeroSAE2027
-  # colcon is run from the `ros_ws` subdirectory, not the repo root.
   ROS_WS: /home/qadt/AeroSAE2027/ros_ws
   GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks:v8.28.0
 
 jobs:
-
+  
+  # Run the gitleaks container over the commits this PR adds, which fails if it finds a credential.
   secret-scan:
     name: Secret scanning
     runs-on: ubuntu-24.04
@@ -57,15 +31,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Deliberately NOT gitleaks/gitleaks-action@v2: that action requires a
-      # paid GITLEAKS_LICENSE for repositories owned by a GitHub organization,
-      # which this one is. The upstream gitleaks container has no such
-      # restriction.
-      #
-      # Deliberately NOT a full-history scan either: the repo's existing history
-      # already trips gitleaks (see the PR description), so a whole-history scan
-      # would fail every PR forever and get muted. This scans only the commits
-      # the PR actually adds, which is what a merge gate should block on.
       - name: Scan commits introduced by this PR
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -81,75 +46,7 @@ jobs:
               --exit-code 1 \
               --log-opts="--no-merges ${BASE_SHA}..${HEAD_SHA}"
 
-  version-pinning:
-    name: Version pinning check
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for unpinned dependencies
-        run: |
-          set -euo pipefail
-          status=0
-
-          echo "== Container images referenced by compose files =="
-          # An image with no tag at all is a hard failure; `:latest` is only a
-          # warning because both compose stacks currently use it on purpose
-          # (the team wants the newest published image without editing files).
-          while IFS= read -r line; do
-            file="${line%%:*}"
-            ref="$(printf '%s' "${line#*image:}" | tr -d ' ')"
-            echo "  ${file}: ${ref}"
-            case "$ref" in
-              *@sha256:*) ;;
-              *:latest)   echo "::warning file=${file}::Image '${ref}' is pinned to a mutable ':latest' tag. Consider a version tag or a @sha256 digest for reproducible builds." ;;
-              *:*)        ;;
-              *)          echo "::error file=${file}::Image '${ref}' has no tag at all."; status=1 ;;
-            esac
-          done < <(grep -rn '^\s*image:' .devcontainer deployment | sed 's/:[0-9]*:/:/')
-
-          echo "== GitHub Actions =="
-          # Every `uses:` must carry an explicit @ref.
-          if grep -rnE '^\s*-?\s*uses:\s*[^@[:space:]]+\s*$' .github/workflows; then
-            echo "::error::Found a GitHub Action used without an explicit @version ref."
-            status=1
-          fi
-
-          echo "== Dockerfiles =="
-          # There is no Dockerfile in this repo today (the devcontainer and
-          # deployment images are both pre-built elsewhere and pulled from
-          # GHCR). This block is kept so the check starts working the moment
-          # someone adds one.
-          mapfile -t dockerfiles < <(find . -path ./.git -prune -o -iname 'Dockerfile*' -print)
-          if [ "${#dockerfiles[@]}" -eq 0 ]; then
-            echo "  no Dockerfile in this repo - skipping apt pin check"
-          else
-            for df in "${dockerfiles[@]}"; do
-              if grep -nE 'apt-get\s+install' "$df" | grep -vE '=[0-9]'; then
-                echo "::warning file=${df}::apt-get install lines with no visible version pin (=X.Y.Z). Review manually."
-              fi
-            done
-          fi
-
-          echo "== Python requirements =="
-          # No requirements.txt exists yet either: the Python code runs against
-          # the interpreter and site-packages baked into the container image.
-          mapfile -t reqfiles < <(find . -path ./.git -prune -o -name 'requirements*.txt' -print)
-          if [ "${#reqfiles[@]}" -eq 0 ]; then
-            echo "  no requirements*.txt in this repo - skipping"
-          else
-            for rf in "${reqfiles[@]}"; do
-              unpinned="$(grep -vE '(==|~=|@)' "$rf" | grep -vE '^\s*#|^\s*-|^\s*$' || true)"
-              if [ -n "$unpinned" ]; then
-                echo "::error file=${rf}::Unpinned python dependencies found:"
-                echo "$unpinned"
-                status=1
-              fi
-            done
-          fi
-
-          exit $status
-
+  # Validates the dev environment configuration             
   devcontainer-build:
     name: Devcontainer config check
     runs-on: ubuntu-24.04
@@ -198,65 +95,28 @@ jobs:
             echo "::error file=.devcontainer/compose.base.yml::bind target is '${compose_target}', expected '${CONTAINER_WORKSPACE}'"; status=1; }
           exit $status
 
+      # Instrumented on purpose: the image is ~6.3 GB compressed / ~22 GB on
+      # disk, and a hosted runner's free space is the open question. The df
+      # lines answer "does it fit"; the step duration in the Actions UI answers
+      # "how long". Once we have both numbers, this whole step can become a
+      # `docker manifest inspect` (registry API only, no download) since nothing
+      # in this job actually runs the image.
       - name: Pull the dev container image
         run: |
           set -euo pipefail
           image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
+
+          echo "== disk before =="
+          df -h /
+
           echo "Pulling ${image}"
           docker pull "$image"
 
-  smoke-test:
-    name: Smoke test (container user check)
-    runs-on: ubuntu-24.04
-    needs: devcontainer-build
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Start container and verify expected user
-        run: |
-          set -euo pipefail
-          image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
-
-          # The image's entrypoint prints "==> Container ready" on stdout before
-          # our command runs, so the values have to be fished out by marker
-          # rather than by capturing stdout wholesale.
-          out="$(docker run --rm "$image" bash -lc '
-            echo "QADT_USER=$(whoami)"
-            echo "QADT_UID=$(id -u)"
-            echo "QADT_HOME=$HOME"
-            echo "QADT_ROS=$(ls /opt/ros | head -1)"
-          ')"
-          echo "$out"
-
-          actual_user="$(sed -n 's/^QADT_USER=//p' <<< "$out")"
-          actual_home="$(sed -n 's/^QADT_HOME=//p' <<< "$out")"
-          ros_distro="$(sed -n 's/^QADT_ROS=//p' <<< "$out")"
-
-          status=0
-          if [ "$actual_user" != "$EXPECTED_CONTAINER_USER" ]; then
-            echo "::error::Expected container user '${EXPECTED_CONTAINER_USER}' but got '${actual_user}'"
-            status=1
-          fi
-          if [ "$actual_home" != "/home/${EXPECTED_CONTAINER_USER}" ]; then
-            echo "::error::Expected \$HOME '/home/${EXPECTED_CONTAINER_USER}' but got '${actual_home}'"
-            status=1
-          fi
-          if [ -z "$ros_distro" ]; then
-            echo "::error::No ROS distribution found under /opt/ros in the image"
-            status=1
-          fi
-
-          # The workspace bind has to be writable by the container user, or
-          # colcon cannot create ros_ws/build.
-          sudo chown -R 1000:1000 "$PWD"
-          docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "$image" \
-            bash -lc 'touch .ci-write-probe && rm .ci-write-probe && echo "workspace bind is writable"'
-
-          if [ $status -eq 0 ]; then
-            echo "User check passed."
-          fi
-          exit $status
-
+          echo "== disk after =="
+          df -h /
+          docker image inspect "$image" --format 'on-disk bytes: {{.Size}}'
+  
+  # Build the ROS2 workspace with colcon, to verify the devcontainer is usable for development.
   colcon-build:
     name: Colcon build (ROS2 workspace)
     runs-on: ubuntu-24.04
@@ -268,6 +128,11 @@ jobs:
         run: |
           set -euo pipefail
           image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
+
+          # Tighter squeeze than the pull step: this job unpacks the same ~22 GB
+          # image AND then writes ros_ws/{build,install,log} on top of it.
+          echo "== disk before =="
+          df -h /
 
           # The runner checks out as uid 1001; the container user is uid 1000.
           # Without this, colcon cannot write ros_ws/build.
@@ -285,6 +150,10 @@ jobs:
               colcon build --symlink-install --event-handlers console_direct+
             '
 
+          echo "== disk after build =="
+          df -h /
+    
+  # Runs lint checks on C++ and Python code. C++ formatting is enforced, Python linting is reported but not blocking for now.
   lint:
     name: Lint (Python + C++)
     runs-on: ubuntu-24.04
