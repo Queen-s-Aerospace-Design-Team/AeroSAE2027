@@ -9,6 +9,8 @@
 
 using namespace std::chrono_literals;
 
+test
+
 namespace
 {
     constexpr const char* DEFAULT_MESSAGE = "Hello, world! ";
