@@ -52,7 +52,7 @@ jobs:
 
   # Checks the devcontainer config is coherent: the compose profile generates and
   # parses, devcontainer.json agrees with it, and the image exists.
-  devcontainer-build:
+  devcontainer-config:
     name: Devcontainer config check
     runs-on: ubuntu-24.04
     steps:
@@ -118,7 +118,7 @@ jobs:
   colcon-build:
     name: Colcon build (ROS2 workspace)
     runs-on: ubuntu-24.04
-    needs: devcontainer-build
+    needs: devcontainer-config
     steps:
       - uses: actions/checkout@v7
 
@@ -127,7 +127,7 @@ jobs:
           set -euo pipefail
           echo "DEV_IMAGE=$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)" >> "$GITHUB_ENV"
 
-      # The only check that the image actually RUNS as `qadt` - devcontainer-build
+      # The only check that the image actually RUNS as `qadt` - devcontainer-config
       # can only confirm devcontainer.json claims it, which misses an upstream
       # rename. Runs before the build so failure is fast and legible.
       - name: Verify container identity
@@ -198,7 +198,7 @@ jobs:
   lint:
     name: Lint (Python + C++)
     runs-on: ubuntu-24.04
-    needs: devcontainer-build
+    needs: devcontainer-config
     steps:
       - uses: actions/checkout@v7
 
