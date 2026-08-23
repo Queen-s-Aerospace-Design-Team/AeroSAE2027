@@ -54,9 +54,26 @@
                 "C_Cpp.default.browse.limitSymbolsToIncludedHeaders": true,
                 "C_Cpp.default.cStandard": "c17",
                 "C_Cpp.default.cppStandard": "gnu++20",
-                // clang-format support
-                "editor.defaultFormatter": "xaver.clang-format",
+                // Format on save, with the formatter chosen per language. These
+                // are deliberately scoped: a global "editor.defaultFormatter"
+                // would hand every file type to clang-format, which does not
+                // understand Python (or YAML/JSON/Markdown) and so silently did
+                // nothing for them.
                 "editor.formatOnSave": true,
+                "[cpp]": {
+                    "editor.defaultFormatter": "xaver.clang-format"
+                },
+                "[c]": {
+                    "editor.defaultFormatter": "xaver.clang-format"
+                },
+                "[python]": {
+                    "editor.defaultFormatter": "ms-python.autopep8"
+                },
+                // Match ament_flake8.ini (max-line-length = 99). autopep8
+                // defaults to 79 and would otherwise wrap lines ament accepts.
+                "autopep8.args": [
+                    "--max-line-length=99"
+                ],
                 "C_Cpp.formatting": "clangFormat",
                 // For faster performance
                 "remote.downloadExtensionsLocally": true
@@ -69,6 +86,7 @@
                 "josetr.cmake-language-support-vscode",
                 "ms-python.python",
                 "ms-python.vscode-pylance",
+                "ms-python.autopep8",
                 "redhat.vscode-xml",
                 "eamodio.gitlens",
                 "xaver.clang-format"

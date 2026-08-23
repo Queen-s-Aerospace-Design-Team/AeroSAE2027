@@ -1,0 +1,313 @@
+# CI for pull requests into main. Four checks: secrets, devcontainer config,
+# ROS 2 build, and lint. Lint is advisory and never blocks; the rest gate merges.
+# Container jobs `docker run` the image named in .devcontainer/compose.base.yml,
+# read at runtime so CI cannot drift from the dev environment.
+
+name: CI
+
+on:
+  pull_request: # runs on PRs into main
+    branches: [main]
+
+concurrency: # A new push to a PR kills the previous running CI
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# Environment variables shared by all jobs.
+env:
+  EXPECTED_CONTAINER_USER: qadt
+  CONTAINER_WORKSPACE: /home/qadt/AeroSAE2027
+  ROS_WS: /home/qadt/AeroSAE2027/ros_ws
+  PYTHON_PKGS: ros_ws/src/navigation_core ros_ws/src/hardware_controllers ros_ws/src/google_drive
+  GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks:v8.28.0
+
+jobs:
+
+  # Scans the commits this PR adds for credentials. Fails if any are found.
+  secret-scan:
+    name: Secret scanning
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Scan commits introduced by this PR
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          echo "Scanning ${BASE_SHA}..${HEAD_SHA}"
+          docker run --rm -v "${PWD}:/repo" "${GITLEAKS_IMAGE}" \
+            detect \
+              --source=/repo \
+              --redact \
+              --no-banner \
+              --exit-code 1 \
+              --log-opts="--no-merges ${BASE_SHA}..${HEAD_SHA}"
+
+  # Checks the devcontainer config is coherent: the compose profile generates and
+  # parses, devcontainer.json agrees with it, and the image exists.
+  devcontainer-config:
+    name: Devcontainer config check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Generate the active compose profile
+        env:
+          # initialize.sh exits without an X11 display; a runner has none.
+          XDG_SESSION_TYPE: x11
+        run: bash .devcontainer/initialize.sh
+
+      # Every profile is checked, not just the one initialize.sh picked. A runner
+      # always resolves to linux-nonNVIDIA, so without this loop a broken
+      # macos/wsl/NVIDIA profile would reach the developers who use it with CI
+      # still green. Display variables are unset here; `config` only parses.
+      - name: Validate every compose profile
+        run: |
+          set -euo pipefail
+          for profile in .devcontainer/compose.*.yml; do
+            case "$profile" in
+              *compose.base.yml|*compose.active.yml) continue ;;
+            esac
+            docker compose -f .devcontainer/compose.base.yml -f "$profile" config > /dev/null
+            echo "  OK  base + $(basename "$profile")"
+          done
+          echo "All compose profiles parse cleanly."
+
+      - name: Check devcontainer.json agrees with the compose files
+        run: |
+          set -euo pipefail
+          remote_user="$(grep -oP '"remoteUser"\s*:\s*"\K[^"]+' .devcontainer/devcontainer.json)"
+          ws_folder="$(grep -oP '"workspaceFolder"\s*:\s*"\K[^"]+' .devcontainer/devcontainer.json)"
+          compose_workdir="$(grep -oP '^\s*working_dir:\s*\K\S+' .devcontainer/compose.base.yml)"
+          compose_target="$(grep -oP '^\s*target:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
+
+          echo "devcontainer.json remoteUser       = ${remote_user}"
+          echo "devcontainer.json workspaceFolder  = ${ws_folder}"
+          echo "compose.base.yml  working_dir      = ${compose_workdir}"
+          echo "compose.base.yml  bind target      = ${compose_target}"
+
+          status=0
+          [ "$remote_user" = "$EXPECTED_CONTAINER_USER" ] || {
+            echo "::error file=.devcontainer/devcontainer.json::remoteUser is '${remote_user}', expected '${EXPECTED_CONTAINER_USER}'"; status=1; }
+          [ "$ws_folder" = "$CONTAINER_WORKSPACE" ] || {
+            echo "::error file=.devcontainer/devcontainer.json::workspaceFolder is '${ws_folder}', expected '${CONTAINER_WORKSPACE}'"; status=1; }
+          [ "$compose_workdir" = "$CONTAINER_WORKSPACE" ] || {
+            echo "::error file=.devcontainer/compose.base.yml::working_dir is '${compose_workdir}', expected '${CONTAINER_WORKSPACE}'"; status=1; }
+          [ "$compose_target" = "$CONTAINER_WORKSPACE" ] || {
+            echo "::error file=.devcontainer/compose.base.yml::bind target is '${compose_target}', expected '${CONTAINER_WORKSPACE}'"; status=1; }
+          exit $status
+
+      # Registry API only - no download. Nothing in this job runs the image.
+      - name: Verify the dev container image is reachable
+        run: |
+          set -euo pipefail
+          image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
+          echo "Checking ${image}"
+          docker manifest inspect "$image" > /dev/null
+          echo "Image exists and is pullable."
+
+  # Builds the ROS 2 workspace, after confirming the image runs as the expected
+  # user. The identity check runs here so it rides on this job's image pull.
+  colcon-build:
+    name: Colcon build (ROS2 workspace)
+    runs-on: ubuntu-24.04
+    needs: devcontainer-config
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve dev container image
+        run: |
+          set -euo pipefail
+          echo "DEV_IMAGE=$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)" >> "$GITHUB_ENV"
+
+      # The only check that the image actually RUNS as `qadt` - devcontainer-config
+      # can only confirm devcontainer.json claims it, which misses an upstream
+      # rename. Runs before the build so failure is fast and legible.
+      - name: Verify container identity
+        run: |
+          set -euo pipefail
+
+          # The entrypoint prints "==> Container ready" on stdout before our
+          # command, so values are read by marker, not by capturing stdout.
+          out="$(docker run --rm "${DEV_IMAGE}" bash -lc '
+            echo "QADT_USER=$(whoami)"
+            echo "QADT_UID=$(id -u)"
+            echo "QADT_HOME=$HOME"
+            echo "QADT_ROS=$(ls /opt/ros | head -1)"
+          ')"
+          echo "$out"
+
+          actual_user="$(sed -n 's/^QADT_USER=//p' <<< "$out")"
+          actual_home="$(sed -n 's/^QADT_HOME=//p' <<< "$out")"
+          ros_distro="$(sed -n 's/^QADT_ROS=//p' <<< "$out")"
+
+          status=0
+          if [ "$actual_user" != "$EXPECTED_CONTAINER_USER" ]; then
+            echo "::error::Expected container user '${EXPECTED_CONTAINER_USER}' but got '${actual_user}'"
+            status=1
+          fi
+          if [ "$actual_home" != "/home/${EXPECTED_CONTAINER_USER}" ]; then
+            echo "::error::Expected \$HOME '/home/${EXPECTED_CONTAINER_USER}' but got '${actual_home}'"
+            status=1
+          fi
+          if [ -z "$ros_distro" ]; then
+            echo "::error::No ROS distribution found under /opt/ros in the image"
+            status=1
+          fi
+
+          if [ $status -eq 0 ]; then
+            echo "Container identity check passed."
+          fi
+          exit $status
+
+      - name: colcon build
+        run: |
+          set -euo pipefail
+
+          # Canary: the image is tracked as :latest and can grow without warning.
+          echo "== disk before =="
+          df -h /
+
+          # Runner checks out as uid 1001; container user is uid 1000. Without
+          # this chown, colcon cannot write ros_ws/build.
+          sudo chown -R 1000:1000 "$PWD"
+
+          docker run --rm \
+            -v "${PWD}:${CONTAINER_WORKSPACE}" \
+            -w "${ROS_WS}" \
+            "${DEV_IMAGE}" \
+            bash -lc '
+              # No `set -u`: ROS setup.bash aborts under nounset.
+              set -eo pipefail
+              source /opt/ros/*/setup.bash
+              colcon build --symlink-install --event-handlers console_direct+
+            '
+
+          echo "== disk after build =="
+          df -h /
+
+  # Advisory only. Every step is continue-on-error, so this job is always green.
+  # Findings surface as PR annotations and a job summary, never as a merge block.
+  lint:
+    name: Lint (Python + C++)
+    runs-on: ubuntu-24.04
+    needs: devcontainer-config
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve dev container image
+        run: |
+          set -euo pipefail
+          echo "DEV_IMAGE=$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)" >> "$GITHUB_ENV"
+          echo "## Lint results (advisory - does not block merge)" >> "$GITHUB_STEP_SUMMARY"
+
+      # Turns `path:line:col: message` findings into ::warning:: annotations and a
+      # summary table. Shared by both lint steps below. Exits 1 if any findings.
+      - name: Install findings reporter
+        run: |
+          set -euo pipefail
+          cat > /tmp/report-findings.py <<'PY'
+          import os
+          import re
+          import sys
+          from collections import Counter
+
+          # flake8/clang-format: path:line:col: message
+          # pep257:              path:line in <context>: message
+          COLUMN_RE = re.compile(r'^(\S+?):(\d+):(\d+):\s+(.*)$')
+          NO_COLUMN_RE = re.compile(r'^(\S+?):(\d+) in .*?:\s+(.*)$')
+
+          tool = sys.argv[1]
+          findings = []
+          for raw in sys.stdin:
+              line = raw.rstrip('\n')
+              match = COLUMN_RE.match(line)
+              if match:
+                  path, lineno, col, message = match.groups()
+              else:
+                  match = NO_COLUMN_RE.match(line)
+                  if not match:
+                      continue
+                  path, lineno, message = match.groups()
+                  col = '1'
+              path = path.lstrip('./')
+              # Drop anything that is not a real repo-relative path, so stray
+              # log lines that happen to look like findings are ignored.
+              if not os.path.exists(path):
+                  continue
+              findings.append((path, lineno, col, message.strip()))
+
+          for path, lineno, col, message in findings:
+              print(f'::warning file={path},line={lineno},col={col},title={tool}::{message}')
+
+          summary = os.environ.get('GITHUB_STEP_SUMMARY')
+          if summary:
+              with open(summary, 'a') as handle:
+                  if findings:
+                      handle.write(f'\n### {tool}: {len(findings)} finding(s)\n\n')
+                      handle.write('| File | Count |\n| --- | --- |\n')
+                      counts = Counter(f[0] for f in findings)
+                      for path, count in sorted(counts.items()):
+                          handle.write(f'| `{path}` | {count} |\n')
+                      handle.write('\n<details><summary>All findings</summary>\n\n```\n')
+                      for path, lineno, col, message in findings:
+                          handle.write(f'{path}:{lineno}:{col}: {message}\n')
+                      handle.write('```\n\n</details>\n')
+                  else:
+                      handle.write(f'\n- **{tool}**: clean\n')
+
+          sys.exit(1 if findings else 0)
+          PY
+          echo "reporter installed"
+
+      # Style is .clang-format at the repo root; ./scripts/format-all.sh is the
+      # local fixer. px4_msgs and px4_ros_com are vendored upstream and excluded
+      # here - note format-all.sh does NOT exclude them.
+      - name: C++ format check (clang-format)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
+            bash -lc '
+              set -eo pipefail
+              find ros_ws/src \
+                -path "*/px4_msgs/*" -prune -o \
+                -path "*/px4_ros_com/*" -prune -o \
+                -path "*/build/*" -prune -o \
+                -path "*/install/*" -prune -o \
+                -regextype posix-extended -regex ".*\.(cpp|c|cc|cxx|h|hh|hpp)" -print0 \
+              | xargs -0 --no-run-if-empty clang-format --dry-run --Werror
+            ' > /tmp/cpp-lint.log 2>&1 || true
+          cat /tmp/cpp-lint.log
+
+          python3 /tmp/report-findings.py clang-format < /tmp/cpp-lint.log || {
+            echo "::warning::clang-format reported violations. Run ./scripts/format-all.sh to fix. Advisory only - not blocking."
+            exit 1
+          }
+
+      # ament_flake8 / ament_pep257 are the tools the three ament_python packages
+      # already declare in their own test/ folders. Run from the repo root so the
+      # reported paths are repo-relative and the annotations resolve.
+      - name: Python lint (ament_flake8 + ament_pep257)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
+            bash -lc "
+              source /opt/ros/*/setup.bash
+              ament_flake8 ${PYTHON_PKGS}
+              ament_pep257 ${PYTHON_PKGS}
+            " > /tmp/py-lint.log 2>&1 || true
+          cat /tmp/py-lint.log
+
+          python3 /tmp/report-findings.py ament_flake8+pep257 < /tmp/py-lint.log || {
+            echo "::warning::ament_flake8/ament_pep257 reported violations. Advisory only - not blocking."
+            exit 1
+          }
