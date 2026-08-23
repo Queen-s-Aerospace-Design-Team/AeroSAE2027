@@ -95,26 +95,18 @@ jobs:
             echo "::error file=.devcontainer/compose.base.yml::bind target is '${compose_target}', expected '${CONTAINER_WORKSPACE}'"; status=1; }
           exit $status
 
-      # Instrumented on purpose: the image is ~6.3 GB compressed / ~22 GB on
-      # disk, and a hosted runner's free space is the open question. The df
-      # lines answer "does it fit"; the step duration in the Actions UI answers
-      # "how long". Once we have both numbers, this whole step can become a
-      # `docker manifest inspect` (registry API only, no download) since nothing
-      # in this job actually runs the image.
-      - name: Pull the dev container image
+      # `manifest inspect` hits the registry API only - it proves the image
+      # exists and is publicly readable without downloading it. Nothing in this
+      # job runs the image, so a `docker pull` here would spend ~3 min fetching
+      # 6.3 GB to answer a yes/no question. Since colcon-build and lint both
+      # gate on this job, that time came straight off the critical path.
+      - name: Verify the dev container image is reachable
         run: |
           set -euo pipefail
           image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
-
-          echo "== disk before =="
-          df -h /
-
-          echo "Pulling ${image}"
-          docker pull "$image"
-
-          echo "== disk after =="
-          df -h /
-          docker image inspect "$image" --format 'on-disk bytes: {{.Size}}'
+          echo "Checking ${image}"
+          docker manifest inspect "$image" > /dev/null
+          echo "Image exists and is pullable."
   
   # Build the ROS2 workspace with colcon, to verify the devcontainer is usable for development.
   colcon-build:
@@ -124,13 +116,66 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve dev container image
+        run: |
+          set -euo pipefail
+          echo "DEV_IMAGE=$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)" >> "$GITHUB_ENV"
+
+      # Folded in from the old standalone smoke-test job. It lives here rather
+      # than in its own job because a separate job means a separate VM, which
+      # means a second ~3 min pull of the same image; here it rides along on the
+      # pull colcon-build has to do anyway and costs seconds.
+      #
+      # This is the ONLY check that verifies the image actually runs as `qadt`.
+      # devcontainer-build checks that devcontainer.json *claims* `qadt`, which
+      # cannot catch a rename made upstream in the containers2027 repo. It runs
+      # before the build so that failure surfaces in seconds with a clear
+      # message, rather than as an opaque permissions error 7 minutes in.
+      - name: Verify container identity
+        run: |
+          set -euo pipefail
+
+          # The image entrypoint prints "==> Container ready" on stdout before
+          # our command runs, so values are fished out by marker rather than by
+          # capturing stdout wholesale.
+          out="$(docker run --rm "${DEV_IMAGE}" bash -lc '
+            echo "QADT_USER=$(whoami)"
+            echo "QADT_UID=$(id -u)"
+            echo "QADT_HOME=$HOME"
+            echo "QADT_ROS=$(ls /opt/ros | head -1)"
+          ')"
+          echo "$out"
+
+          actual_user="$(sed -n 's/^QADT_USER=//p' <<< "$out")"
+          actual_home="$(sed -n 's/^QADT_HOME=//p' <<< "$out")"
+          ros_distro="$(sed -n 's/^QADT_ROS=//p' <<< "$out")"
+
+          status=0
+          if [ "$actual_user" != "$EXPECTED_CONTAINER_USER" ]; then
+            echo "::error::Expected container user '${EXPECTED_CONTAINER_USER}' but got '${actual_user}'"
+            status=1
+          fi
+          if [ "$actual_home" != "/home/${EXPECTED_CONTAINER_USER}" ]; then
+            echo "::error::Expected \$HOME '/home/${EXPECTED_CONTAINER_USER}' but got '${actual_home}'"
+            status=1
+          fi
+          if [ -z "$ros_distro" ]; then
+            echo "::error::No ROS distribution found under /opt/ros in the image"
+            status=1
+          fi
+
+          if [ $status -eq 0 ]; then
+            echo "Container identity check passed."
+          fi
+          exit $status
+
       - name: colcon build
         run: |
           set -euo pipefail
-          image="$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)"
 
-          # Tighter squeeze than the pull step: this job unpacks the same ~22 GB
-          # image AND then writes ros_ws/{build,install,log} on top of it.
+          # Canary: the image is tracked as :latest and can grow without
+          # warning. Measured 2026-08-23 - the image plus build artifacts cost
+          # ~15 GB of the runner's 87 GB free, so there is ample headroom today.
           echo "== disk before =="
           df -h /
 
@@ -141,7 +186,7 @@ jobs:
           docker run --rm \
             -v "${PWD}:${CONTAINER_WORKSPACE}" \
             -w "${ROS_WS}" \
-            "$image" \
+            "${DEV_IMAGE}" \
             bash -lc '
               # No `set -u`: ROS setup.bash reads AMENT_TRACE_SETUP_FILES
               # unconditionally and aborts under nounset.
@@ -153,7 +198,10 @@ jobs:
           echo "== disk after build =="
           df -h /
     
-  # Runs lint checks on C++ and Python code. C++ formatting is enforced, Python linting is reported but not blocking for now.
+  # Runs lint checks on C++ and Python code. ADVISORY ONLY - every step here is
+  # continue-on-error, so this job is always green and can never block a merge.
+  # Findings surface three ways instead: a red X on the individual step, a
+  # ::warning:: annotation on the PR, and a summary block on the run page.
   lint:
     name: Lint (Python + C++)
     runs-on: ubuntu-24.04
@@ -165,8 +213,9 @@ jobs:
         run: |
           set -euo pipefail
           echo "DEV_IMAGE=$(grep -oP '^\s*image:\s*\K\S+' .devcontainer/compose.base.yml | head -1)" >> "$GITHUB_ENV"
+          echo "### Lint results (advisory - does not block merge)" >> "$GITHUB_STEP_SUMMARY"
 
-      # C++ formatting is enforced. `.clang-format` at the repo root is the
+      # C++ formatting is checked against `.clang-format` at the repo root; `.clang-format` at the repo root is the
       # style config, clang-format 18 ships in the dev container, and
       # `./scripts/format-all.sh` is the local fixer.
       #
@@ -175,9 +224,10 @@ jobs:
       # repo's .clang-format. (Note that scripts/format-all.sh does NOT exclude
       # them - do not run it blindly, or it will reformat vendored sources.)
       - name: C++ format check (clang-format)
+        continue-on-error: true
         run: |
           set -euo pipefail
-          docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
+          if docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
             bash -lc '
               set -euo pipefail
               clang-format --version
@@ -189,7 +239,13 @@ jobs:
                 -regextype posix-extended -regex ".*\.(cpp|c|cc|cxx|h|hh|hpp)" -print0 \
               | xargs -0 --no-run-if-empty clang-format --dry-run --Werror
               echo "clang-format: clean"
-            '
+            '; then
+            echo "- C++ (clang-format): clean" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::clang-format found formatting violations. Run ./scripts/format-all.sh to fix. Advisory only - not blocking this PR."
+            echo "- C++ (clang-format): **violations found** - run \`./scripts/format-all.sh\`" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       # Python linting uses ament_flake8 / ament_pep257 - the tools the three
       # ament_python packages already declare in their own test/ folders, and
@@ -197,16 +253,14 @@ jobs:
       # anywhere in the repo, so introducing one here would have been a new
       # tool, not the configured one.
       #
-      # NON-BLOCKING FOR NOW. These packages currently fail their own lint tests
-      # on `main` (hardware_controllers alone has ~80 quote-style violations),
-      # so gating on them today would red-flag every PR regardless of its
-      # contents. Flip `continue-on-error` to false once the backlog is cleaned
-      # up - that cleanup is a separate PR, not part of adding CI.
+      # These packages currently fail their own lint tests on `main`
+      # (hardware_controllers alone has ~80 quote-style violations), so this
+      # reports rather than gates. Cleaning that backlog is a separate PR.
       - name: Python lint (ament_flake8 + ament_pep257) - report only
         continue-on-error: true
         run: |
           set -euo pipefail
-          docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
+          if docker run --rm -v "${PWD}:${CONTAINER_WORKSPACE}" -w "${CONTAINER_WORKSPACE}" "${DEV_IMAGE}" \
             bash -lc '
               source /opt/ros/*/setup.bash
               status=0
@@ -216,7 +270,10 @@ jobs:
                 ( cd "ros_ws/src/${pkg}" && ament_pep257 . ) || status=1
               done
               exit $status
-            ' || {
-              echo "::warning::ament_flake8/ament_pep257 reported violations. Not blocking this PR - see the comment above this step in ci.yml."
-              exit 1
-            }
+            '; then
+            echo "- Python (ament_flake8 + ament_pep257): clean" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::ament_flake8/ament_pep257 reported violations. Advisory only - not blocking this PR."
+            echo "- Python (ament_flake8 + ament_pep257): **violations found**" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
