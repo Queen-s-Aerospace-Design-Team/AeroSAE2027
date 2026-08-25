@@ -8,7 +8,9 @@ for the long per-OS install guide.
 ## Scope
 
 This repo is the autonomy + perception stack for the **AeroSAE 2027** competition, developed
-by **Queen's Aerospace Design Team (QADT)**.
+by **Queen's Aerospace Design Team (QADT)**. Unfamiliar with a term used here — uXRCE-DDS, FSM,
+SITL, RTL, SVO, offboard mode, `qadt` vs `qadt-deploy`? Look it up in
+[docs/context/glossary.md](docs/context/glossary.md).
 
 Branch naming, PR conventions, and review norms are **not** repeated here — see
 [CONTRIBUTING.md](./CONTRIBUTING.md). `main` is protected: every change lands via a PR with at
@@ -40,7 +42,7 @@ Docker dev container — there is no supported host-native build.
 - ROS 2 **Jazzy** (`/opt/ros/jazzy`, Python 3.12)
 - PX4 via the Micro XRCE-DDS bridge. **No PX4 version is pinned in this repo** — the dev image
   is tagged `:latest` and ships its own `~/PX4-Autopilot`, so the effective version is whatever
-  that image currently carries. See `docs/context/px4-integration.md`.
+  that image currently carries. See [docs/context/px4-integration.md](docs/context/px4-integration.md).
 - ZED stereo camera perception, mostly *outside* the ROS workspace (see `perception/`)
 - DBSCAN clustering for target detection. `circle_processing.py` runs it three times with
   different settings: paper targets `min_samples=5`, wall planes `min_samples=3`, ground plane
@@ -60,7 +62,7 @@ Docker dev container — there is no supported host-native build.
 - `./scripts/manualCompose.sh` brings the devcontainer up/down from the terminal (runs `initialize.sh`, `docker compose up -d`, execs a shell) as an alternative to VSCode's "Reopen in Container".
 - Editor: format-on-save with `clang-format` is enabled for C/C++ inside the container; Python paths are pointed at `/opt/ros/jazzy/...`, the built `px4_msgs` install, and `ros_ws/src`.
 
-More detail — image reference, mount layout, container identity — in `docs/context/devcontainer.md`.
+More detail — image reference, mount layout, container identity — in [docs/context/devcontainer.md](docs/context/devcontainer.md).
 
 ## Build & run
 
@@ -211,7 +213,7 @@ whether a failure actually blocks depends on the branch-protection required-chec
 
 Container jobs read the image name out of `.devcontainer/compose.base.yml` at runtime, so CI
 cannot drift from the dev environment. The container-identity check exists specifically to catch
-an upstream rename of the container user — see `docs/context/devcontainer.md`.
+an upstream rename of the container user — see [docs/context/devcontainer.md](docs/context/devcontainer.md).
 
 ## Deeper context
 

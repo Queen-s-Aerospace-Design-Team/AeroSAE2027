@@ -23,7 +23,7 @@ scoring vocabulary) becomes relevant, add it to this table.
 | **PX4** | The flight-control firmware running on the vehicle's autopilot |
 | **FMU** | Flight Management Unit — the autopilot hardware. Source of the `/fmu/...` topic namespace |
 | **uXRCE-DDS** | Micro XRCE-DDS, the transport bridging PX4 to the ROS 2 DDS network. `MicroXRCEAgent` is the bridging process; see [px4-integration.md](px4-integration.md) |
-| **Offboard mode** | PX4 flight mode where an external computer streams setpoints. General PX4 behaviour is that the stream must be kept up or the vehicle leaves offboard — that is upstream behaviour, not something this repo asserts or implements a guard for (see `docs/context/architecture.md`) |
+| **Offboard mode** | PX4 flight mode where an external computer streams setpoints. General PX4 behaviour is that the stream must be kept up or the vehicle leaves offboard — that is upstream behaviour, not something this repo asserts or implements a guard for (see [architecture.md](architecture.md)) |
 | **Setpoint** | A commanded target (position, velocity, attitude) published each control tick |
 | **Arm / disarm** | Enabling / disabling motor output. Arming is a distinct step from selecting a flight mode |
 | **RTL** | Return To Launch — fly back to the takeoff point. One of the `FinishPolicy` options on `Mission` |
