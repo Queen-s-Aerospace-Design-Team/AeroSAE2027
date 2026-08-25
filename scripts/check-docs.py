@@ -36,6 +36,7 @@ Deps:   python3 stdlib only. No network, no API key, runs in ~1s.
 import re
 import sys
 import pathlib
+import subprocess
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -190,14 +191,64 @@ for script in ("scripts/simulateDepth.sh", "scripts/simulateTask2.sh"):
 
 
 # --------------------------------------------------------------------------
-# Every repo path the docs reference must exist
+# Every repo path the docs reference must exist IN THE REPO.
+#
+# Deliberately checks git membership, not disk presence: generated directories
+# like ros_ws/build exist on the machine of anyone who has built the workspace
+# but not in a fresh checkout. Testing the filesystem made this check pass
+# locally and fail in CI - a check whose result depends on whose machine it runs
+# on is worse than no check, so gitignored paths are skipped as build artifacts.
 # --------------------------------------------------------------------------
+def _git(*args):
+    try:
+        out = subprocess.run(("git", *args), cwd=ROOT, capture_output=True,
+                             text=True, timeout=30)
+        return out.stdout
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+_tracked_out = _git("ls-files")
+if _tracked_out is None:
+    assert_("git available", False, "could not run git; path checks need it")
+    TRACKED = set()
+else:
+    TRACKED = set()
+    for f in _tracked_out.splitlines():
+        TRACKED.add(f)
+        parent = pathlib.PurePosixPath(f).parent          # every parent dir counts
+        while str(parent) != ".":
+            TRACKED.add(str(parent))
+            parent = parent.parent
+
+
+def _is_ignored(path):
+    """True if git ignores this path - i.e. it is a generated artifact.
+
+    Tries the bare path and the path with a trailing slash. Directory-only
+    .gitignore patterns (`build/`) do not match a bare path that is absent from
+    disk, because git cannot tell an absent path is a directory - and absent is
+    exactly the case we are asking about in a clean checkout.
+    """
+    for candidate in (path, path.rstrip("/") + "/"):
+        try:
+            if subprocess.run(("git", "check-ignore", "-q", candidate), cwd=ROOT,
+                              timeout=30).returncode == 0:
+                return True
+        except (OSError, subprocess.SubprocessError):
+            return False
+    return False
+
+
 PATH_RE = r"`((?:scripts|ros_ws|perception|deployment|gz_worlds|docs|\.devcontainer|\.github)/[\w./\-]+)`"
-for path in sorted(set(re.findall(PATH_RE, BLOB))):
-    if path in ALLOWED_MISSING_PATHS:
+for raw in sorted(set(re.findall(PATH_RE, BLOB))):
+    path = raw.rstrip("/")          # docs write directories both ways
+    if path in ALLOWED_MISSING_PATHS or raw in ALLOWED_MISSING_PATHS:
         continue
-    assert_("referenced path exists", (ROOT / path).exists(),
-            f"docs reference `{path}`, which does not exist "
+    if path not in TRACKED and _is_ignored(path):
+        continue  # generated artifact (ros_ws/build, install/, log/) - not in a clean checkout
+    assert_("referenced path is in the repo", path in TRACKED,
+            f"docs reference `{raw}`, which is not tracked in git "
             f"(if deliberate, add it to ALLOWED_MISSING_PATHS with a reason)")
 
 # Every relative markdown link resolves
