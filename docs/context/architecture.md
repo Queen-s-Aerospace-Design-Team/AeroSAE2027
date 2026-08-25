@@ -134,7 +134,7 @@ what to watch if clusters come out noisy after a hardware run.
 
 A self-contained Python subproject (`src/zed_positional_measurement/`: `pipeline.py`, `sdk.py`,
 `config.py`, `metrics.py`, `storage.py`, `exporters.py`, `geometry.py`, `cli.py`, `models.py`,
-`providers.py`, `__main__.py`) with its own pytest suite. **Not** built or run through colcon.
+`providers.py`, `__main__.py`, `__init__.py`) with its own pytest suite. **Not** built or run through colcon.
 "Self-contained" here means a directory whose `tests/conftest.py` injects `src/` onto `sys.path` —
 there is no `pyproject.toml`, `setup.py`, or `pytest.ini`, so it is not an installable package.
 
