@@ -21,13 +21,13 @@ Terms that show up across this repo, the compose files, and team conversation.
 | **PX4** | The flight-control firmware running on the vehicle's autopilot |
 | **FMU** | Flight Management Unit — the autopilot hardware. Source of the `/fmu/...` topic namespace |
 | **uXRCE-DDS** | Micro XRCE-DDS, the transport bridging PX4 to the ROS 2 DDS network. `MicroXRCEAgent` is the bridging process; see [px4-integration.md](px4-integration.md) |
-| **Offboard mode** | PX4 flight mode where an external computer streams setpoints. PX4 will refuse to enter it unless setpoints are already arriving, and will drop out if they stop |
+| **Offboard mode** | PX4 flight mode where an external computer streams setpoints. General PX4 behaviour is that the stream must be kept up or the vehicle leaves offboard — that is upstream behaviour, not something this repo asserts or implements a guard for (see `docs/context/architecture.md`) |
 | **Setpoint** | A commanded target (position, velocity, attitude) published each control tick |
 | **Arm / disarm** | Enabling / disabling motor output. Arming is a distinct step from selecting a flight mode |
 | **RTL** | Return To Launch — fly back to the takeoff point. One of the `FinishPolicy` options on `Mission` |
 | **FSM** | Finite State Machine — here, the `enum FSM` in `Mission` that sequences a mission from `Init` to `Finished`. See [architecture.md](architecture.md) |
 | **SITL** | Software In The Loop — PX4 firmware running as a host process against a simulated vehicle, no hardware involved |
-| **HITL** | Hardware In The Loop — real autopilot hardware driven by a simulated world. Not currently used here |
+| **HITL** | Hardware In The Loop — real autopilot hardware driven by a simulated world. Listed for contrast with SITL; no HITL tooling exists in this repo |
 | **QGC** | QGroundControl, the ground-station GUI. Launched with `./scripts/launchQGC.sh` |
 | **Gazebo** | The 3D physics simulator SITL flies in. Worlds live in `gz_worlds/` |
 | **`ros_gz`** | The bridge relaying topics between Gazebo and ROS 2 |
@@ -48,7 +48,7 @@ Terms that show up across this repo, the compose files, and team conversation.
 
 | Term | Meaning |
 | --- | --- |
-| **ZED** | The Stereolabs stereo camera family used for perception. **ZED X** is the model on the Jetson |
+| **ZED** | The Stereolabs stereo camera family used for perception. The Jetson runs **ZED X** / **ZED X Mini** (`deployment/compose.perception.yml`, `perception/docs/learnings.md`) |
 | **SVO** | Stereolabs' recorded-stream format. Captured by `record_svo.py`, replayed for offline work |
 | **Jetson** | The NVIDIA compute module onboard the aircraft that runs perception |
 | **DBSCAN** | Density-based clustering used in `circle_processing.py` to group repeated target detections. `min_samples=5` — a target needs ≥5 frame observations to survive |

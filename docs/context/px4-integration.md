@@ -56,8 +56,11 @@ message/service definitions and the ROS 2 bridge library respectively. Treat the
 
 - **Don't hand-edit them.** If message definitions need updating, follow the sync procedure in
   `ros_ws/src/px4_msgs/README.md`.
-- They're excluded from this repo's clang-format check, so reformatting them would produce a large
-  diff that CI won't catch and reviewers can't read.
+- They're excluded from the **CI** clang-format check — but **not** from `./scripts/format-all.sh`,
+  which runs `clang-format -i` over all of `ros_ws/src` and will rewrite them in place. `ci.yml`
+  says so itself: "note format-all.sh does NOT exclude them." So the most likely way to reformat
+  vendored code is the very script the docs tell you to run. Check `git status` afterwards and
+  revert any vendored churn — CI will not catch it for you.
 - They dominate build time. This is why the clean-rebuild gotcha in `AGENTS.md` warns against
   wiping `ros_ws/build` unnecessarily.
 
@@ -67,17 +70,37 @@ build failure.
 
 ## SITL simulation
 
-Two tmux harnesses, each opening PX4 SITL + Gazebo + the `ros_gz` bridge + rviz2 in four panes:
+Two tmux harnesses. Each creates **five** panes and drives four of them (the fifth is left as an
+idle shell; the scripts' own "2x2 grid" comment is wrong):
+
+| Pane | Runs |
+| --- | --- |
+| `.0` | PX4 SITL via `make px4_sitl` — **this is what launches Gazebo**; Gazebo is not its own pane |
+| `.1` | `ros2 run ros_gz_bridge parameter_bridge` |
+| `.2` | `rviz2` |
+| `.3` | `rqt_image_view` |
+| `.4` | idle shell |
+
 
 | Script | World / target |
 | --- | --- |
-| `./scripts/simulateDepth.sh` | walls world, `gz_x500_depth_walls` target |
-| `./scripts/simulateTask2.sh` | custom world at `gz_worlds/aeac` |
+| `./scripts/simulateDepth.sh` | PX4's bundled `walls` world, target `gz_x500_depth_walls` |
+| `./scripts/simulateTask2.sh` | target `gz_x500_depth`; **intends** `gz_worlds/aeac` but does not load it — see below |
+
+⚠️ `simulateTask2.sh` sets `GZ_WORLD_PATH="$HOME/AeroSAE2027/gz_worlds/aeac"` and then chains
+`PX4_GZ_WORLD=${GZ_WORLD_PATH} && make px4_sitl ...`. The `&&` makes that a shell variable, not an
+exported environment variable, so `make`/PX4 never receives it — and the path is missing the `.sdf`
+extension the on-disk file actually has (`gz_worlds/aeac.sdf`). The custom world is not applied.
 
 Both resolve `PX4_DIR="$HOME/PX4-Autopilot"`. Run them from inside the dev container.
 
-`./scripts/launchQGC.sh` starts QGroundControl separately, in a new terminal. Per `SETUP.md`, give
-the sim 30–60 seconds, then wait for QGC to show **"Ready"** before trying to arm.
+`./scripts/launchQGC.sh` backgrounds the QGroundControl AppImage, downloading it first if absent.
+It does **not** spawn a terminal — running it from a second terminal is the user's step, per
+`SETUP.md`. It also hard-exits on anything that isn't Linux/`x86_64`, so it is unusable on the
+macOS setup discussed below. Per `SETUP.md`, give the sim 30–60 seconds, then wait for QGC to show
+**"Ready"** before trying to arm.
 
-macOS caveat (from `SETUP.md`): Gazebo's 3D view specifically doesn't work well on Mac — a known
-driver mismatch — though the rest of the stack does.
+macOS caveat, quoting `SETUP.md:50` exactly: "**macOS**: needs XQuartz for GUI passthrough —
+Gazebo's 3D simulation view specifically won't work well on Mac (known limitation, driver
+mismatch), but the rest should". `.devcontainer/compose.macos.yml:2` states it independently and
+attributes it to XQuartz's out-of-date OpenGL driver.

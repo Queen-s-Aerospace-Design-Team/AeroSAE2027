@@ -4,12 +4,21 @@ Detail behind the "Repo layout" summary in [AGENTS.md](../../AGENTS.md). Read th
 
 ## `flight_missions` — the mission framework
 
-C++, `ament_cmake`, split into two sub-packages:
+C++, `ament_cmake`. It is **one** ament package — there is a single `flight_missions/package.xml`;
+`mission_core/` and `mission_nodes/` are plain CMake `add_subdirectory()` targets, not sub-packages,
+so don't go looking for a `package.xml` in either.
 
 - `mission_core/` builds a **library** (`add_library(mission_core)`) holding the `Mission` base class.
 - `mission_nodes/` builds three **executables**: `return_to_origin`, `return_to_origin_v2`,
   `orbit_location`. Each is launched on its own, e.g. `ros2 run flight_missions orbit_location`
   (see `deployment/compose.mission.yml`).
+
+> ⚠️ **`return_to_origin` is not a `Mission`.** `mission_nodes/src/return_to_origin.cpp:63` declares
+> `class ReturnToOrigin : public rclcpp::Node` — it is a ~410-line legacy node predating the
+> framework, with its own duplicated FSM (`Init, OffboardRequested, WaitForStableOffboard,
+> ArmRequested, Approach, ManualRequested, Finished` — no `Failed`, no finish-policy states), its
+> own copy of `Utilities::waitForServices`, and no header file. Only `orbit_location` and
+> `return_to_origin_v2` subclass `Mission`. Read `return_to_origin_v2` if you want the pattern.
 
 ### The `Mission` base class
 
@@ -23,8 +32,20 @@ should go* and *when it has arrived*.
 → `FinishPolicyRequested` → `FinishPolicyMonitor` → `Finished`, with `Failed` as the terminal
 error state.
 
-Note the shape: offboard mode is requested and confirmed **stable before** the vehicle is armed —
-PX4 rejects an offboard-mode switch unless setpoints are already streaming, so the order matters.
+Two gaps worth knowing before you debug a stuck mission: **`Failed` is not reachable from
+`MissionObjective` or `FinishPolicyMonitor`** — there are no timeouts on either, so a mission whose
+`isMissionObjectiveReached()` never returns true hangs indefinitely rather than failing. And
+`FinishPolicyMonitor` is a no-op pass-through when the policy is `Manual`.
+
+Note the shape: offboard mode is requested first, then held through `WaitForStableOffboard` for
+more than 10 ticks (~550 ms at the 50 ms tick) before the vehicle is armed.
+
+The usual justification — PX4 will not stay in offboard mode unless setpoints keep streaming — is
+general PX4 behaviour, **not** something this repo documents; the only comment gesturing at it is
+`return_to_origin.cpp:96` ("offboard_control_mode needs to be paired with trajectory_setpoint"),
+inherited from the vendored upstream examples. Note the code does not actually pre-stream: the
+first tick publishes one setpoint pair and requests offboard in the same tick. The stabilisation
+delay is applied before *arming*, not before the mode request.
 
 **Finish policies** (`enum FinishPolicy : uint8_t`), chosen via the `Mission` constructor's second
 argument (defaults to `Manual`):
@@ -42,20 +63,21 @@ Two are **pure virtual** — a subclass will not compile without them:
 | `publishMissionSetpoint()` | **Yes** (`= 0`) | Publish this mission's trajectory setpoint each tick |
 | `isMissionObjectiveReached()` | **Yes** (`= 0`) | Report whether the objective is complete, advancing the FSM |
 | `onMissionObjectiveStart()` | No | Hook fired when `MissionObjective` is entered |
-| `onMissionFinished()` | No | Hook fired when the mission completes |
-| `publishOffboardControlMode()` | No | Override the default control-mode advertisement (e.g. to command attitude rather than position) |
+| `onMissionFinished()` | No | Hook fired when the mission completes. Default body is empty and **no node currently overrides it** |
+| `publishOffboardControlMode()` | No | Override the default control-mode advertisement, which sets `position=true, velocity=true` and everything else false. **No mission_nodes subclass currently overrides it.** |
 
-> **Doc drift:** the one-line summary in [AGENTS.md](../../AGENTS.md) (inherited verbatim from the
-> old `CLAUDE.md`) lists the overridables as `onMissionObjectiveStart()` /
-> `publishMissionSetpoint()` / `onMissionFinished()`. That omits `isMissionObjectiveReached()`,
-> which is one of the two *required* ones, and it doesn't distinguish required from optional.
-> The table above reflects `mission.hpp` as it actually reads; the summary was left as-is rather
-> than silently rewritten.
+> **History:** the pre-`AGENTS.md` docs listed the overridables as `onMissionObjectiveStart()` /
+> `publishMissionSetpoint()` / `onMissionFinished()` — omitting `isMissionObjectiveReached()`,
+> which is one of the two *required* ones, and not distinguishing required from optional. Both
+> `AGENTS.md` and the table above now match `mission.hpp`. If you find a doc still repeating the
+> old list, it predates this correction.
 
 ### PX4 interface
 
-The base class publishes `OffboardControlMode`, `TrajectorySetpoint`, and `VehicleCommand` on the
-`/fmu/in/...` topics and calls the `/fmu/vehicle_command` service. See
+The base class publishes `OffboardControlMode` and `TrajectorySetpoint` on `/fmu/in/...`, and
+issues commands (arm, disarm, mode changes, RTL) through the `/fmu/vehicle_command` **service**.
+A `/fmu/in/vehicle_command` publisher is also created but never published to — every command goes
+via the service, so treat that publisher as dead code. See
 [px4-integration.md](px4-integration.md) for the transport underneath.
 
 ## `navigation_core`
@@ -66,8 +88,10 @@ standard ROS navigation output can drive the vehicle. `cmd_vel_test.py` is a tes
 ## `hardware_controllers`
 
 Python. The `gimbal_controller` node drives the payload gimbal PWM and the water-release GPIO.
-Pin assignments are not hardcoded — they're passed as explicit params at deploy time, see
-`deployment/compose.hardware.yml`.
+Pin assignments are passed as explicit params at deploy time — `pitch_pwm_pin:=33`,
+`water_gpio_pin:=31`, plus `dry_run` (`deployment/compose.hardware.yml`). Note that is only 3 of
+the **21** params the node declares; the rest (servo limits, lock thresholds, `fire_duration_s`)
+fall back to their code defaults.
 
 ## `google_drive` / `google_drive_interfaces`
 
@@ -85,23 +109,34 @@ Top-level scripts in `perception/`, run directly (not through colcon):
 | Script | Role |
 | --- | --- |
 | `record_svo.py` | Capture a ZED SVO recording |
-| `validate_svo.py` | Sanity-check a recording before relying on it |
+| `validate_svo.py` | Validate **YOLO detections / TRT engines** by replaying an SVO through them and drawing boxes; can compare two engines side by side. The SVO is the fixed input, not the thing under test |
 | `extract_training_frames.py` | Pull frames out of an SVO for labelling |
 | `upload_to_roboflow.py` | Push those frames to Roboflow |
-| `circle_processing.py` | Detect paper targets and cluster the detections |
+| `circle_processing.py` | **Consumes** detections from a JSONL stream (batch via `ingest_json_file`, live via `tail_frames`), then clusters papers and wall planes, finds the ground plane, infers room corners, and emits target descriptions. It performs no detection itself |
 
 ### Clustering
 
-`circle_processing.py` runs **DBSCAN** over detected paper targets with `min_samples=5` — a
-candidate target needs **≥5 frame observations** to survive as a cluster. This is the knob that
+`circle_processing.py` runs **DBSCAN** three separate times, with different parameters — quoting
+`min_samples=5` alone is incomplete:
+
+| Clustering | `min_samples` | Where |
+| --- | --- | --- |
+| Paper targets | **5** | `circle_processing.py:14`, used at `:355` |
+| Wall planes | 3 | `:16`, used at `:442` |
+| Ground plane | 2 | `:517` |
+
+For paper targets a candidate needs **≥5 observations within `eps=0.3 m`** to survive as a cluster
+— equivalent to ≥5 frames only if each paper is detected at most once per frame. This is the knob that
 trades false positives against missing a briefly-seen target; `perception/docs/issues.md` covers
 what to watch if clusters come out noisy after a hardware run.
 
 ### `zed-positional-measurement/`
 
 A self-contained Python subproject (`src/zed_positional_measurement/`: `pipeline.py`, `sdk.py`,
-`config.py`, `metrics.py`, `storage.py`, `exporters.py`, `geometry.py`, `cli.py`) with its own
-pytest suite. **Not** built or run through colcon.
+`config.py`, `metrics.py`, `storage.py`, `exporters.py`, `geometry.py`, `cli.py`, `models.py`,
+`providers.py`, `__main__.py`) with its own pytest suite. **Not** built or run through colcon.
+"Self-contained" here means a directory whose `tests/conftest.py` injects `src/` onto `sys.path` —
+there is no `pyproject.toml`, `setup.py`, or `pytest.ini`, so it is not an installable package.
 
 Its `docs/` folder is the source of truth for its architecture. Read in this order:
 
@@ -121,5 +156,9 @@ a bad camera-handoff state.
 
 ## `gz_worlds/`
 
-SDF world file(s) plus `generate_world.py` to produce them. Consumed by the `scripts/simulate*.sh`
-tmux harnesses.
+`generate_world.py` writes `aeac.sdf`; `testing_room-params.xml` holds its parameters.
+
+Only `simulateTask2.sh` references this directory, and it currently fails to apply the world:
+`PX4_GZ_WORLD` is set with `&&` chaining instead of being exported, so `make`/PX4 never sees it,
+and the path it points at (`gz_worlds/aeac`) lacks the `.sdf` extension the file actually has.
+`simulateDepth.sh` does not use `gz_worlds/` at all — it uses PX4's bundled `walls` world.

@@ -7,7 +7,7 @@
 # not templated: docker compose does not resolve devcontainer.json-only variables like
 # ${localWorkspaceFolderBasename} (that's a devcontainers-CLI-only substitution), and a fixed
 # path keeps every team member's container laid out identically, matching devcontainer.json's
-# "workspaceFolder" and the ROS_WS convention documented in CLAUDE.md.
+# "workspaceFolder" and the workspace layout documented in docs/context/devcontainer.md.
 name: qadt-devcontainer
 services:
   dev:

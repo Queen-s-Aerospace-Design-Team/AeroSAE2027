@@ -17,9 +17,13 @@ The production counterpart is `ghcr.io/queen-s-aerospace-design-team/deployment-
 (`deployment/compose.deployment.yml`).
 
 The tag is `:latest`, not a pinned digest. That's a deliberate trade — everyone gets fixes without
-touching this repo — but it means **the image can change under you with no commit here**. `ci.yml`
-flags the same risk in its own comment: "the image is tracked as `:latest` and can grow without
-warning." ROS 2 Jazzy and the bundled `~/PX4-Autopilot` are whatever that tag currently ships.
+touching this repo — but it means **the image can change under you with no commit here**. ROS 2
+Jazzy and the bundled `~/PX4-Autopilot` are whatever that tag currently ships.
+
+(`ci.yml:174` carries a related comment — `# Canary: the image is tracked as :latest and can grow
+without warning.` — but in context it sits above a `df -h /` pair and is about the image growing in
+**size** and exhausting runner disk, not about its behaviour drifting. Don't cite it as evidence
+for the behavioural risk.)
 
 > `TODO:` record the exact name and URL of the image repo. Git history refers to it as
 > `containers2027` (commit `f7b730f`) and earlier as `containersfork` (commit `8f6efe2`), but the
@@ -50,7 +54,8 @@ Quoting `compose.base.yml`'s header comment:
 > directory is actually named on disk (a fork, a rename, etc.) ... This path is deliberately a
 > fixed literal, not templated: docker compose does not resolve devcontainer.json-only variables
 > like `${localWorkspaceFolderBasename}` (that's a devcontainers-CLI-only substitution), and a
-> fixed path keeps every team member's container laid out identically.
+> fixed path keeps every team member's container laid out identically, matching devcontainer.json's
+> "workspaceFolder" and the workspace layout documented in docs/context/devcontainer.md.
 
 So your clone can be named anything on the host; inside the container it is always
 `/home/qadt/AeroSAE2027`. This is why the CMake-cache gotcha in `AGENTS.md` is about the *mount
@@ -86,9 +91,9 @@ rviz2), but accepts XWayland: it checks for either `XDG_SESSION_TYPE=x11` or a l
 
 ## The `qadt-dev` → `qadt` rename, and why CI checks container identity
 
-`qadt-dev` appears in **no current tracked file** — the only hits for that string are substrings of
-`qadt-devcontainer`. It is history, and it's worth knowing because it explains a CI check that
-otherwise looks redundant.
+`qadt-dev` appears in **no config, script, or source file** — the only hits for that string outside
+these context docs are substrings of `qadt-devcontainer`. It is history, and it's worth knowing
+because it explains a CI check that otherwise looks redundant.
 
 Per commit `8f6efe2`, the image's Dockerfile "renamed its build-time user from qadt-dev to qadt so
 it matches devcontainer.json's `remoteUser`". Before that fix, the mismatch meant "VS Code's
@@ -102,15 +107,15 @@ That failure lives in the **image**, which this repo doesn't build. So CI checks
    `compose.base.yml`'s `working_dir` / bind `target`, asserting all four against
    `EXPECTED_CONTAINER_USER: qadt` and `CONTAINER_WORKSPACE: /home/qadt/AeroSAE2027`. This only
    proves the config *claims* the right user.
-2. **`Verify container identity`**, a step inside the `Colcon build` job, actually `docker run`s
-   the image and asserts `whoami` is `qadt`, `$HOME` is `/home/qadt`, and something exists under
-   `/opt/ros`. Its comment says why: "The only check that the image actually RUNS as `qadt` —
-   devcontainer-config can only confirm devcontainer.json claims it, which misses an upstream
-   rename."
+2. **`Verify container identity`**, a step inside the `Colcon build (ROS2 workspace)` job, actually
+   `docker run`s the image and asserts `whoami` is `qadt`, `$HOME` is `/home/qadt`, and something
+   exists under `/opt/ros`. Its comment says why: "The only check that the image actually RUNS as
+   `qadt` - devcontainer-config can only confirm devcontainer.json claims it, which misses an
+   upstream rename. Runs before the build so failure is fast and legible."
 
-Because the tag is `:latest`, that second check is a canary on a moving target: it can start
-failing on a PR that changed nothing relevant, and that failure is real information about the
-image, not about the PR.
+Because the tag is `:latest`, that second check guards a moving target: it can start failing on a
+PR that changed nothing relevant, and that failure is real information about the image, not about
+the PR.
 
 ## `qadt` vs `qadt-deploy`
 
