@@ -317,18 +317,14 @@ jobs:
   # is the truth; the docs are under test. Deliberately NOT a snapshot test - it
   # must not fire when someone edits prose, only when a doc and its source
   # disagree. Pure python3 stdlib, no image pull, ~1s.
-  #
-  # Advisory while the false-positive rate is unknown, same posture lint started
-  # in. Promote to blocking once it has proven quiet - see scripts/check-docs.py
-  # for what it asserts and how to maintain it.
+  # See scripts/check-docs.py for what it asserts and how to maintain it.
   docs-consistency:
-    name: Docs consistency (advisory)
+    name: Docs consistency
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
       - name: Check agent context against source
-        continue-on-error: true
         id: check
         run: |
           set -uo pipefail
