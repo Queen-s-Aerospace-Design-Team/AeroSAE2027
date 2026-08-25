@@ -24,6 +24,10 @@
 - If your change touches `.devcontainer/` or anything else that affects the whole team's dev environment, actually test it — rebuild the container yourself, don't just eyeball the diff. See `AGENTS.md` for the one-time `rm -rf ros_ws/{build,install,log}` gotcha if you've changed the workspace mount path.
 - If your change touches `ros_ws/`, make sure `colcon build --symlink-install` succeeds before pushing.
 
+## PR Checks
+- After opening a PR, multiple automatic checks will run on your code. These verify that your code is working. These checks typically take around 10 minutes to complete. The checks are not a replacement for your own examination, especially when working in `.devcontainer/` or `ros_ws`.
+- If the check **Docs consistency** fails that is ok. Still proceed with the PR. Just be sure to note this in your pr or inform an exec.
+
 ## Reviewing someone else's PR
 
 You don't need to be an expert in the exact file changed to leave a useful review — flag anything unclear, anything that looks untested, or anything you'd have done differently and want explained. "Looks fine, tested it and it builds" is a legitimate, sufficient approval for most changes here; save deep scrutiny for anything touching flight-critical logic (`flight_missions/`, `mission_core/`) or the shared devcontainer/deployment config.
