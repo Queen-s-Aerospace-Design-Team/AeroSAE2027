@@ -11,10 +11,16 @@ pull_policy: always
 
 (`.devcontainer/compose.base.yml`)
 
-**The image is not built from this repo — there is no Dockerfile here.** It is built and pushed
-from a separate container repository under the same GitHub org, and this repo only consumes it.
+Two different places are involved, and it's easy to conflate them:
+
+- **Where the image is hosted:** GHCR (GitHub Container Registry), at the path above. This is what
+  `docker pull` talks to.
+- **Where the image is built from:** a *separate source repository* under the same GitHub org that
+  holds the **Dockerfile** and pushes the built image to GHCR. **There is no Dockerfile in
+  AeroSAE2027** — this repo only consumes the published image.
+
 The production counterpart is `ghcr.io/queen-s-aerospace-design-team/deployment-px4:latest`
-(`deployment/compose.deployment.yml`).
+(`deployment/compose.deployment.yml`), built from that same source repo.
 
 The tag is `:latest`, not a pinned digest. That's a deliberate trade — everyone gets fixes without
 touching this repo — but it means **the image can change under you with no commit here**. ROS 2
@@ -25,9 +31,14 @@ without warning.` — but in context it sits above a `df -h /` pair and is about
 **size** and exhausting runner disk, not about its behaviour drifting. Don't cite it as evidence
 for the behavioural risk.)
 
-> `TODO:` record the exact name and URL of the image repo. Git history refers to it as
-> `containers2027` (commit `f7b730f`) and earlier as `containersfork` (commit `8f6efe2`), but the
-> name appears in **no tracked file** in this repo, so neither has been verified as current.
+That source repo is **`Queen-s-Aerospace-Design-Team/containers2027`** (confirmed by the team; it
+also appears in commit `f7b730f` as "companion change in containers2027"). It was previously called
+`containersfork` — the name used in commit `8f6efe2` — so older commit messages referring to
+`containersfork/devcontainer-px4` mean the same repo.
+
+**A change to the dev environment often means a PR in two repos:** the Dockerfile change in
+`containers2027`, and any matching config change here. The `qadt-dev` → `qadt` incident below is
+exactly that pattern.
 
 ## Identity and layout
 

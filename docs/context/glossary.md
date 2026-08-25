@@ -10,9 +10,11 @@ Terms that show up across this repo, the compose files, and team conversation.
 | **AeroSAE 2027** | This season's competition, and the name of this repo (`AeroSAE2027`) |
 | **AEAC 2026** | **Last** season's competition and repo (`AEAC2026`). Per commit `f7b730f`, AEAC 2026 was a genuinely different competition, not a year bump — so "AEAC" is not an old spelling of "AeroSAE", and old AEAC material may not carry over |
 
-> `TODO:` record the competition's full official name, its class/category, and any judge-facing
-> terminology (task names, scoring vocabulary). The repo only ever says "the AeroSAE 2027
-> competition" — nothing in it confirms a longer official title, so none is asserted here.
+**AeroSAE 2027** is the name to use. It was set deliberately in commit `f7b730f` ("fix competition
+name to AeroSAE 2027 ... per the team") and confirmed by the team again during this doc pass;
+`SAE2027` is informal shorthand you may hear, not the name to write. There is no longer official
+title recorded in this repo, so none is asserted here — if judge-facing terminology (task names,
+scoring vocabulary) becomes relevant, add it to this table.
 
 ## Flight stack
 

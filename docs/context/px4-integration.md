@@ -9,13 +9,20 @@ version string in any compose file, script, or doc. PX4 lives at `~/PX4-Autopilo
 dev container image**, so the effective version is whatever `devcontainer-px4:latest` currently
 ships — and that tag moves. See [devcontainer.md](devcontainer.md).
 
-> `TODO:` decide whether the team wants to pin a PX4 version, and record it here if so. Until
-> then, treat "what PX4 version are we on?" as a question answered by inspecting the running
-> container (`cd ~/PX4-Autopilot && git describe --tags`), not by reading this repo.
->
-> The version table in `ros_ws/src/px4_msgs/README.md` (v1.13 / v1.14 / v1.15 / main) is
-> **upstream PX4's own compatibility matrix**, vendored along with the package. It is not a
-> statement about what this team runs.
+Not pinning is a deliberate choice, not an oversight — the version tracks the image. Answer "what
+PX4 version are we on?" by asking the running container, not by reading this repo:
+
+```bash
+cd ~/PX4-Autopilot && git describe --tags
+```
+
+Worth knowing **when** that matters: `px4_msgs` definitions must match the firmware. A mismatch
+does not fail the build and does not raise an error — topics simply exist and never deliver. If
+you are debugging silent `/fmu/...` traffic, check this pairing early.
+
+The version table in `ros_ws/src/px4_msgs/README.md` (v1.13 / v1.14 / v1.15 / main) is **upstream
+PX4's own compatibility matrix**, vendored along with the package. It is not a statement about what
+this team runs.
 
 ## The uXRCE-DDS bridge
 

@@ -47,7 +47,9 @@ Docker dev container — there is no supported host-native build.
   `min_samples=2`
 - C++ (`flight_missions`, `ament_cmake`) + Python (`navigation_core`, `hardware_controllers`,
   `google_drive`)
-- Devcontainer-based dev environment — no supported host-native build
+- Devcontainer-based dev environment — no supported host-native build. The image is *hosted* on
+  GHCR but *built* from a separate repo, `Queen-s-Aerospace-Design-Team/containers2027`; there is
+  no Dockerfile in this repo
 
 ## Development environment
 
@@ -219,6 +221,6 @@ it actually reads them. Before doing non-trivial work in one of these areas, rea
 file first:
 
 - Architecture detail (FSM, mission executables, ZED pipeline, clustering) → [docs/context/architecture.md](docs/context/architecture.md)
-- Devcontainer build/mount details, the `qadt-dev` → `qadt` history → [docs/context/devcontainer.md](docs/context/devcontainer.md)
+- Devcontainer build/mount details, the `qadt-dev` → `qadt` history, and the `containers2027` image-source repo → [docs/context/devcontainer.md](docs/context/devcontainer.md)
 - uXRCE-DDS bridge, PX4 specifics → [docs/context/px4-integration.md](docs/context/px4-integration.md)
 - Team/competition-specific terms → [docs/context/glossary.md](docs/context/glossary.md)
