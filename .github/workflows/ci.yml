@@ -1,5 +1,6 @@
-# CI for pull requests into main. Four checks: secrets, devcontainer config,
-# ROS 2 build, and lint. Lint is advisory and never blocks; the rest gate merges.
+# CI for pull requests into main. Five checks: secrets, devcontainer config,
+# ROS 2 build, lint, and docs consistency. Lint and docs consistency are advisory
+# and never block; the rest gate merges.
 # Container jobs `docker run` the image named in .devcontainer/compose.base.yml,
 # read at runtime so CI cannot drift from the dev environment.
 
@@ -311,3 +312,56 @@ jobs:
             echo "::warning::ament_flake8/ament_pep257 reported violations. Advisory only - not blocking."
             exit 1
           }
+
+  # Asserts the agent-context docs still match the code they describe. The source
+  # is the truth; the docs are under test. Deliberately NOT a snapshot test - it
+  # must not fire when someone edits prose, only when a doc and its source
+  # disagree. Pure python3 stdlib, no image pull, ~1s.
+  #
+  # Advisory while the false-positive rate is unknown, same posture lint started
+  # in. Promote to blocking once it has proven quiet - see scripts/check-docs.py
+  # for what it asserts and how to maintain it.
+  docs-consistency:
+    name: Docs consistency (advisory)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check agent context against source
+        continue-on-error: true
+        id: check
+        run: |
+          set -uo pipefail
+          set +e   # we want the checker's exit code, not an early abort
+          python3 scripts/check-docs.py | tee /tmp/check-docs.log
+          exit "${PIPESTATUS[0]}"
+
+      # Surface failures as a PR annotation and job summary rather than a silent
+      # red X, so the specific stale claim is visible without opening the log.
+      - name: Report
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.check.outcome }}" = "failure" ]; then
+            {
+              echo "## Docs consistency (advisory - does not block merge)"
+              echo
+              echo "The agent-context docs disagree with the code they describe:"
+              echo
+              echo '```'
+              cat /tmp/check-docs.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            while IFS= read -r line; do
+              case "$line" in
+                *"FAIL"*) echo "::warning file=AGENTS.md::${line#*FAIL }" ;;
+              esac
+            done < /tmp/check-docs.log
+            echo "::warning::Agent context is out of date with the code. Advisory only - not blocking."
+          else
+            {
+              echo "## Docs consistency"
+              echo
+              cat /tmp/check-docs.log
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
