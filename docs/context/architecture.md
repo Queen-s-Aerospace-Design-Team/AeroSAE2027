@@ -143,7 +143,7 @@ Its `docs/` folder is the source of truth for its architecture. Read in this ord
 `PRD.md` → `Technical.md` → `Operations.md` → `Schema.md` → `LucasHandoff.md` →
 `Uncertainties.md` → `Validation.md`
 
-⚠️ Per its own `docs/README.md`: those docs describe an intended **live-first** architecture, but
+⚠️ Per its own `perception/zed-positional-measurement/docs/README.md`: those docs describe an intended **live-first** architecture, but
 the current runtime is still **replay-first**. Don't assume the two match — check the code before
 acting on a doc claim.
 
