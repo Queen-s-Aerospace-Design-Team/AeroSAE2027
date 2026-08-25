@@ -21,7 +21,7 @@
 
 ## Before opening a PR
 
-- If your change touches `.devcontainer/` or anything else that affects the whole team's dev environment, actually test it — rebuild the container yourself, don't just eyeball the diff. See `CLAUDE.md` for the one-time `rm -rf ros_ws/{build,install,log}` gotcha if you've changed the workspace mount path.
+- If your change touches `.devcontainer/` or anything else that affects the whole team's dev environment, actually test it — rebuild the container yourself, don't just eyeball the diff. See `AGENTS.md` for the one-time `rm -rf ros_ws/{build,install,log}` gotcha if you've changed the workspace mount path.
 - If your change touches `ros_ws/`, make sure `colcon build --symlink-install` succeeds before pushing.
 
 ## Reviewing someone else's PR

@@ -45,7 +45,7 @@ Hey! Want to get our team's dev environment for this year's QADT season kicks of
    qadt ➜ ~/AeroSAE2027 (main) $ 
    ```
 
-**A couple of OS-specific notes** (also covered in the repo's `readme.md` if you hit any issues):
+**A couple of OS-specific notes** (also covered in the repo's `README.md` if you hit any issues):
 - **Windows**: needs WSL2 + Ubuntu, with Docker Desktop's WSL2 integration enabled
 - **macOS**: needs XQuartz for GUI passthrough — Gazebo's 3D simulation view specifically won't work well on Mac (known limitation, driver mismatch), but the rest should
 - **Linux**: needs an X11 session (not pure Wayland) for GUI apps to display
