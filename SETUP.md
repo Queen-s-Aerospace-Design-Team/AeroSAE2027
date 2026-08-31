@@ -8,7 +8,8 @@ Hey! Want to get our team's dev environment for this year's QADT season kicks of
     ```bash
     docker version
     docker compose version
-    ``` 
+    ```
+    If Ubuntu does not recognize the command, go to Docker Desktop app -> Settings -> Resources -> WSL integration and enable integration with additional distros
 - Install **VS Code**
     - Install the **"Dev Containers"** extension (search it in the Extensions tab)
 
