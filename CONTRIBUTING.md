@@ -26,19 +26,7 @@
 
 ## PR Checks
 - After opening a PR, multiple automatic checks will run on your code. These verify that your code is working. These checks typically take around 10 minutes to complete. The checks are not a replacement for your own examination, especially when working in `.devcontainer/` or `ros_ws`.
-- **Docs consistency** is the one check that goes red without stopping you. It genuinely fails —
-  you will see a red X — but it is not a required check, so the PR can still be merged. Don't
-  just merge past it, though. Work it in this order:
-  1. **Did your change move what the doc describes?** (renamed an FSM state, added a package under
-     `ros_ws/src`, changed a `.clang-format` rule, moved a script.) Fix the doc in this same PR —
-     the failure names the exact claim and the file it came from, so it's usually a one-line edit.
-  2. **Did it fail on a prose-only edit?** Then the check is wrong, not your writing. Fix the
-     assertion in `scripts/check-docs.py` or delete it. Don't reword good prose to appease a bad
-     pattern.
-  3. **Is the fact no longer worth guarding?** Delete the assertion. That's a normal edit, not a
-     defeat.
-  4. **Stuck, or the fix is bigger than this PR?** Note it in your PR description or tell an exec,
-     then proceed.
+- If the **Docs Consistency** check fails, note it in your pr, and carry on. It will not block you from continuing.
 
 ## Reviewing someone else's PR
 
