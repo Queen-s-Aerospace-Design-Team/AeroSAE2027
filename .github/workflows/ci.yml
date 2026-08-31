@@ -1,6 +1,15 @@
 # CI for pull requests into main. Five checks: secrets, devcontainer config,
-# ROS 2 build, lint, and docs consistency. Lint and docs consistency are advisory
-# and never block; the rest gate merges.
+# ROS 2 build, lint, and docs consistency.
+#
+# What a red X means differs per job - three states, not two:
+#   - secrets / devcontainer config / ROS 2 build: fail red, and are the checks
+#     branch protection requires. A red one holds the merge.
+#   - docs consistency: DOES fail red when the docs disagree with the source, but
+#     it is not a required check - the PR can still be merged with it red.
+#     Red here means "go read the failure", not "you are stuck".
+#   - lint: never fails at all. Every step is continue-on-error, so the job is
+#     always green and findings surface only as PR annotations.
+#
 # Container jobs `docker run` the image named in .devcontainer/compose.base.yml,
 # read at runtime so CI cannot drift from the dev environment.
 
@@ -317,6 +326,12 @@ jobs:
   # is the truth; the docs are under test. Deliberately NOT a snapshot test - it
   # must not fire when someone edits prose, only when a doc and its source
   # disagree. Pure python3 stdlib, no image pull, ~1s.
+  #
+  # No continue-on-error here, unlike the lint job: a mismatch genuinely fails
+  # this job and shows a red X. That is intended. It is not a required check in
+  # branch protection, so the red X does not stop the PR being merged - it is
+  # there to be read and acted on, per the triage in CONTRIBUTING.md.
+  #
   # See scripts/check-docs.py for what it asserts and how to maintain it.
   docs-consistency:
     name: Docs consistency
@@ -340,7 +355,7 @@ jobs:
           set -euo pipefail
           if [ "${{ steps.check.outcome }}" = "failure" ]; then
             {
-              echo "## Docs consistency (advisory - does not block merge)"
+              echo "## Docs consistency FAILED (not a required check - merge is not blocked)"
               echo
               echo "The agent-context docs disagree with the code they describe:"
               echo
@@ -353,7 +368,7 @@ jobs:
                 *"FAIL"*) echo "::warning file=AGENTS.md::${line#*FAIL }" ;;
               esac
             done < /tmp/check-docs.log
-            echo "::warning::Agent context is out of date with the code. Advisory only - not blocking."
+            echo "::warning::Agent context is out of date with the code. This check is not required, so the merge is not blocked - fix the doc, fix the assertion, or note it on the PR."
           else
             {
               echo "## Docs consistency"

@@ -26,7 +26,7 @@
 
 ## PR Checks
 - After opening a PR, multiple automatic checks will run on your code. These verify that your code is working. These checks typically take around 10 minutes to complete. The checks are not a replacement for your own examination, especially when working in `.devcontainer/` or `ros_ws`.
-- If the check **Docs consistency** fails that is ok. Still proceed with the PR. Just be sure to note this in your pr or inform an exec.
+- If the **Docs Consistency** check fails, note it in your pr, and carry on. It will not block you from continuing.
 
 ## Reviewing someone else's PR
 

@@ -196,20 +196,30 @@ committing.
 
 ## CI
 
-`.github/workflows/ci.yml` runs on pull requests into `main`. Four jobs; the first three gate
-merges, lint is advisory and never blocks:
+`.github/workflows/ci.yml` runs on pull requests into `main`. Five jobs; the first three gate
+merges, the last two don't:
 
-| Job | What it does | Blocks merge? |
-| --- | --- | --- |
-| **Secret scanning** | gitleaks over the commits the PR adds | Yes |
-| **Devcontainer config check** | runs `initialize.sh`, `docker compose config` over every compose profile, asserts `devcontainer.json` agrees with `compose.base.yml` (`remoteUser`/`workspaceFolder`/`working_dir`/bind target), and confirms the image is pullable | Yes |
-| **Colcon build (ROS2 workspace)** | verifies container identity (the image actually runs as `qadt`), then `colcon build --symlink-install` inside the dev image | Yes |
-| **Lint (Python + C++)** | `clang-format --dry-run --Werror` plus `ament_flake8` / `ament_pep257`; findings surface as PR annotations | **No — advisory** |
+| Job | What it does | Goes red? | Blocks merge? |
+| --- | --- | --- | --- |
+| **Secret scanning** | gitleaks over the commits the PR adds | Yes | Yes |
+| **Devcontainer config check** | runs `initialize.sh`, `docker compose config` over every compose profile, asserts `devcontainer.json` agrees with `compose.base.yml` (`remoteUser`/`workspaceFolder`/`working_dir`/bind target), and confirms the image is pullable | Yes | Yes |
+| **Colcon build (ROS2 workspace)** | verifies container identity (the image actually runs as `qadt`), then `colcon build --symlink-install` inside the dev image | Yes | Yes |
+| **Lint (Python + C++)** | `clang-format --dry-run --Werror` plus `ament_flake8` / `ament_pep257`; findings surface as PR annotations | **No — never** | No |
+| **Docs consistency** | `scripts/check-docs.py` — asserts the agent-context docs still match the source they describe | **Yes** | **No** |
 
-"Blocks merge?" reflects intent: the workflow itself only decides whether a job *fails*, and
-whether a failure actually blocks depends on the branch-protection required-checks settings on
-`main`, which aren't visible in this repo. Lint is guaranteed non-blocking regardless —
-`continue-on-error: true` on every step means the job is always green.
+The last two rows are both "doesn't block", but for different reasons, and conflating them is a
+mistake worth avoiding:
+
+- **Lint never goes red at all.** `continue-on-error: true` on every step means the job is
+  always green; findings only ever appear as PR annotations.
+- **Docs consistency genuinely fails and shows a red X** when a doc disagrees with its source. It
+  has no `continue-on-error`. It is simply not in the required-checks list for `main`, so the PR
+  can still be merged with it red. Red means "read the failure and deal with it" — see the
+  triage in [CONTRIBUTING.md](./CONTRIBUTING.md) — not "you are stuck".
+
+The first three columns come from the workflow itself. Whether a failure *actually* blocks
+depends on the branch-protection required-checks settings on `main`, which aren't visible in
+this repo.
 
 Container jobs read the image name out of `.devcontainer/compose.base.yml` at runtime, so CI
 cannot drift from the dev environment. The container-identity check exists specifically to catch
