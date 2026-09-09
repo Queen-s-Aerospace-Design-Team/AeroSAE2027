@@ -44,20 +44,19 @@ your work:
 ```bash
 git add .
 git commit -m "Add onboarding publisher and subscriber"
-git push -u origin onboarding_firstname_lastname
+git push
 ```
 
-Open a pull request from your branch for practice. The pull request will not be accepted
-or merged. For the team's normal branch, commit, and review workflow, see
+Open a pull request from your branch for practice. For the team's normal branch, commit, and review workflow, see
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 3. Fly the Simulated Drone
 
 Follow [Running the Sim](SETUP.md#running-the-sim) in `SETUP.md` to build the workspace,
 start Gazebo, and open QGroundControl. Use `simulateDepth.sh`; wait for the simulator to
-start, then arm and take off from QGroundControl. Gazebo may be choppy, and that is okay.
+start, then arm and take off from QGroundControl. Gazebo will take a while to load, be patient when loading it for the first time
 
 If you get stuck, check [SETUP.md](SETUP.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the
 [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
 
-If you have any questions, do not hesitate to reach out the managers!
+If you have any questions, do not hesitate to reach out the managers! We are here to help!
