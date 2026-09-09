@@ -1,5 +1,5 @@
 # Dev Environment Setup
-Hey! This document outlines the setup for the team's dev environment for this year's QADT season. It will take some time, as there is a ~15GB download. Here you'll find the details for all operating systems: Windows, macOS, and native Ubuntu. There is also a section [Running the Sim](#running-the-sim) that goes through actually flying the drone in simulation! Follow this guide from the top down, and reach out to your managers with any questions!
+Hey! This document outlines the setup for the team's dev environment for this year's QADT season. It will take some time, as there is a ~15GB download. Here you'll find the details for all operating systems: Windows, macOS, and native Ubuntu. There is also a section [Running the Sim](#running-the-sim) that goes through actually flying the drone in simulation! Follow this guide from the top down, and reach out to your managers with any questions! Don't be scared by the length of this doc! You'll only have to go through 1/3 of it to set up the dev environment on your OS.
 
 #### Accept Your GitHub Collaborator Invite
 
