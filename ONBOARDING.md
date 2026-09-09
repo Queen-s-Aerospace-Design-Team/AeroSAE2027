@@ -21,11 +21,11 @@ From the repository, create a branch using your first and last name:
 ```bash
 git checkout main
 git pull origin main
-git checkout -b onboarding_firstname_lastname
+git checkout -b onboarding_YOURFIRSTNAME_YOURLASTNAME
 ```
 
 Onboarding branches must use this naming format so they are distinguishable from project
-branches. **Onboarding branches will not be merged with `main`.**
+branches. Replace with your first and last name
 
 ## 2. Build a ROS 2 Publisher and Subscriber
 
