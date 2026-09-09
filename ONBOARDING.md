@@ -58,5 +58,6 @@ start Gazebo, and open QGroundControl. Use `simulateDepth.sh`; wait for the simu
 start, then arm and take off from QGroundControl. Gazebo may be choppy, and that is okay.
 
 If you get stuck, check [SETUP.md](SETUP.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the
-[GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki) before
-asking for help. Record what you tried and the error you saw.
+[GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
+
+If you have any questions, do not hesitate to reach out the managers!
