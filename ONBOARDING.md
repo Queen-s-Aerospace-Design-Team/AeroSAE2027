@@ -1,0 +1,62 @@
+## Onboarding Project
+
+This project is designed to help new software members become comfortable creating and
+running software in the team's development environment. By the end, you should have:
+
+- created a small ROS 2 package with a publisher and subscriber;
+- built and run your code inside the dev container; and
+- launched the simulator and watched the drone fly in QGroundControl and Gazebo.
+
+## Before You Start
+
+Meeting 1 covers the prerequisites: your GitHub account, collaborator access, an SSH key,
+and cloning the repository. If you need help with the development environment, follow
+[SETUP.md](SETUP.md) for your operating system. The [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
+contains additional learning resources and troubleshooting information.
+
+## 1. Create an Onboarding Branch
+
+From the repository, create a branch using your first and last name:
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b onboarding_firstname_lastname
+```
+
+Onboarding branches must use this naming format so they are distinguishable from project
+branches. **Onboarding branches will not be merged with `main`.**
+
+## 2. Build a ROS 2 Publisher and Subscriber
+
+Create your ROS 2 package in the designated onboarding folder. Follow the ROS 2 guide for
+[creating a package](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#what-is-a-ros-2-package).
+
+Your package must contain:
+
+1. A publisher node that publishes a message to a topic.
+2. A subscriber node that receives and prints messages from that topic.
+
+Use the [ROS 2 publisher and subscriber tutorial](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Writing-A-Simple-Py-Publisher-And-Subscriber.html)
+as your guide. Build and run the package inside the dev container, then commit and push
+your work:
+
+```bash
+git add .
+git commit -m "Add onboarding publisher and subscriber"
+git push -u origin onboarding_firstname_lastname
+```
+
+Open a pull request from your branch for practice. The pull request will not be accepted
+or merged. For the team's normal branch, commit, and review workflow, see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 3. Fly the Simulated Drone
+
+Follow [Running the Sim](SETUP.md#running-the-sim) in `SETUP.md` to build the workspace,
+start Gazebo, and open QGroundControl. Use `simulateDepth.sh`; wait for the simulator to
+start, then arm and take off from QGroundControl. Gazebo may be choppy, and that is okay.
+
+If you get stuck, check [SETUP.md](SETUP.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the
+[GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki) before
+asking for help. Record what you tried and the error you saw.
