@@ -1,57 +1,523 @@
-Hey! Want to get our team's dev environment for this year's QADT season kicks off. Should take ~20-30 min depending on your internet (there's a ~15GB download).
+# Dev Environment Setup
+Hey! This document outlines the setup for the team's dev environment for this year's QADT season. It will take some time, as there is a ~15GB download. Here you'll find the details for all operating systems: Windows, macOS, and native Ubuntu. There is also a section [Running the Sim](#running-the-sim) that goes through actually flying the drone in simulation! Follow this guide from the top down, and reach out to your managers with any questions! Don't be scared by the length of this doc! You'll only have to go through 1/3 of it to set up the dev environment on your OS.
 
-**Before you start:**
-- You'll get a GitHub collaborator invite for `Queen-s-Aerospace-Design-Team/AeroSAE2027` — accept it first (check email or https://github.com/notifications)
-- Make sure you have a GitHub SSH key set up (test with `ssh -T git@github.com` — if that doesn't say "Hi [username]!", set one up first)
-- Install **Docker** (Docker Desktop on Windows/Mac, or Docker Engine on Linux) 
-    - Type the following commands to verify both Docker and Docker-Compose are installed:
-    ```bash
-    docker version
-    docker compose version
-    ```
-    If Ubuntu does not recognize the command, go to Docker Desktop app -> Settings -> Resources -> WSL integration and enable integration with additional distros
-- Install **VS Code**
-    - Install the **"Dev Containers"** extension (search it in the Extensions tab)
+#### Accept Your GitHub Collaborator Invite
 
-**Steps:**
-1. Clone the repo:
-   ```bash
-   git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
-   ```
-2. Open the folder in VS Code. Run:
-    ```bash
-    cd AeroSAE2027
-    code .
-    ```
-3. When VS Code prompts "Reopen in Container," click it (or Command Palette → "Dev Containers: Reopen in Container") — *(If this doesnt show up, do (CTRL + SHIFT + P) and search "Dev Containers: Reopen in Container")*
-4. First time will take a while — it's pulling a ~15GB image. In your terminal you will see a few specifications that is being gathered to run the container.
-5. Once you see "Starting Micro XRCE Agent...", it's open. Run this in a new integrated terminal (CTRL + SHIFT + `):
-   ```bash
-   pwd
-   echo $AMENT_PREFIX_PATH
-   ls -ld ~/PX4-Autopilot
-   which register-python-argcomplete
-   ```
+You'll get a GitHub collaborator invite for `Queen-s-Aerospace-Design-Team/AeroSAE2027` — accept it before going any further (check your email, or https://github.com/notifications).
 
-   The output of the previous lines should look something like this: 
-   ```bash
-   qadt ➜ ~/AeroSAE2027 (main) $ pwd
-   /home/qadt/AeroSAE2027
-   qadt ➜ ~/AeroSAE2027 (main) $ echo $AMENT_PREFIX_PATH 
-   /opt/ros/jazzy
-   qadt ➜ ~/AeroSAE2027 (main) $ ls -ld ~/PX4-Autopilot 
-   drwxr-xr-x 1 qadt qadt 4096 Aug  8 22:58 /home/qadt/PX4-Autopilot
-   qadt ➜ ~/AeroSAE2027 (main) $ which register-python-argcomplete 
-   /usr/bin/register-python-argcomplete
-   qadt ➜ ~/AeroSAE2027 (main) $ 
-   ```
+#### Install VSCode
 
-**A couple of OS-specific notes** (also covered in the repo's `README.md` if you hit any issues):
-- **Windows**: needs WSL2 + Ubuntu, with Docker Desktop's WSL2 integration enabled
-- **macOS**: needs XQuartz for GUI passthrough — Gazebo's 3D simulation view specifically won't work well on Mac (known limitation, driver mismatch), but the rest should
-- **Linux**: needs an X11 session (not pure Wayland) for GUI apps to display
+Install VSCode for your operating system from **[this link for Windows and MacOS](https://code.visualstudio.com/download)**. **[Linux VSCode is covered in its instructions below](#setup---native-linux)**. We will be using the **Dev Containers** VSCode extension to download Docker images and open development containers inside VSCode.
 
-**Bonus round — if all that works, try flying the sim:**
+#### Create a GitHub Account
+
+If you don’t already have a GitHub account:
+
+1. Go to [https://github.com/signup](https://github.com/signup)
+2. Follow the steps to create an account (I recommend that you create it under a personal email)
+3. Verify your email address when prompted
+
+Once your account is created, **sign in** and keep the page open — you’ll need it shortly when setting up SSH access and cloning repositories.
+
+#### Install the VSCode Extensions You’ll Need
+
+Launch VSCode and install the following extensions (you can search for them in the Extensions tab on the left sidebar):
+
+- **Dev Containers** – allows you to open and work inside Docker-based development environments
+- **Docker** – helps visualize and manage containers
+- **WSL** – (Windows only) lets VSCode connect to your WSL Ubuntu environment
+
+You can install them all at once by running this command in a terminal:
+
+```bash
+code --install-extension ms-vscode-remote.remote-containers
+code --install-extension ms-vscode-remote.remote-wsl
+code --install-extension ms-azuretools.vscode-docker
+```
+
+---
+
+### Setup - Windows
+
+This project is developed and built inside Docker containers running on **WSL2 (Windows Subsystem for Linux)**. We will use **Ubuntu (latest)** as the default WSL distribution to keep the setup consistent across all contributors.
+
+*In this guide, **WSL2** and **WSL** are used interchangeably; however, they both mean the same thing.*
+
+The development workflow is:
+
+1. **Run Docker alongside WSL2 (via Docker Desktop).**
+2. **Build and run code inside of the development containers using VSCode.**
+3. **Use Git inside WSL2** for source control.
+
+#### Install WSL2 and Ubuntu
+
+For reference, here's Microsoft’s official guide: [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
+
+To install WSL, open any terminal in windows and enter the following:
+
+```bash
+wsl --install
+```
+
+**TIME TO REBOOT!** Changes will not be made until the system is rebooted.
+
+Then, confirm that you have wsl installed by entering the following:
+
+```bash
+wsl --version
+wsl --list --verbose
+```
+
+Make sure Ubuntu is installed and set as the **default distribution**:
+
+```bash
+wsl --set-default Ubuntu
+```
+
+Confirm this by entering `wsl --status` and you should see the following:
+
+```bash
+$ wsl --status
+------------------------------
+Default Distribution: Ubuntu
+Default Version: 2
+```
+
+To run WSL, **press the windows key and search WSL or Ubuntu** and launch the executable. Then run the following command:
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+It will ask you to create a **username** - I always do `abotticchio` or `[firstInitial+lastname]`. It will also prompt you to create a password - **keep this light and short!** Keep in mind, when typing in your password in a terminal, *your characters won't show on screen* but will still be valid (this is a canon experience for first time linux users).
+
+#### Install Git in WSL
+
+You want git available in your Ubuntu shell so you can clone our AeroSAE2027 repo. Enter the following in WSL:
+
+```bash
+sudo apt update && sudo apt install git -y
+```
+
+Verify by entering the following:
+
+```bash
+git --version # You should see output from this command
+```
+
+#### Make an SSH Key
+
+Now that Git is installed, let’s create an SSH key so you can securely authenticate with GitHub without typing your password every time.
+
+First, generate a new SSH key pair:
+
+```bash
+ssh-keygen
+```
+
+When prompted to **"Enter a file in which to save the key",** just press Enter (3 times) to accept the default path:
+
+```bash
+~/.ssh/id_ed25519
+```
+
+Now, let’s copy your **public key** so you can add it to GitHub. Run:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+This will print a line starting with `ssh-ed25519`. **Copy that entire line.**
+
+Then:
+
+1. Go to Go to your GitHub profile &rarr; **Settings** &rarr; **SSH and GPG Keys** &rarr; **New SSH Key**
+2. Give it a recognizable title (e.g. “WSL Laptop”)
+3. Paste your key into the **Key** field
+4. Click **Add SSH key**
+
+Finally, test your connection to GitHub:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see:
+
+```bash
+Hi [username]! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+If you see this, then you're good to go!
+
+#### Clone the Repository
+
+Inside WSL, make a **`git`** directory in your **home (`~`)** directory. This is where we will clone AeroSAE2027 and other git repositories into. First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
+
+Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH with `git clone <ssh_url>`. Your commands should look like this bellow:
+
+```bash
+cd ~
+mkdir git
+cd git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
+```
+
+Enter `Yes` if you are cloning with SSH for the first time (i.e. just after making an SSH key).
+
+#### Install Docker Desktop
+
+Download and install [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/). Docker desktop is a windows/mac application that will automatically detect running WSL instances and you'll be able to access **`docker`** commands within WSL without needing to install it explicitly.
+
+During setup:
+- Enable **WSL2 backend**.
+- Integrate Docker Desktop with your **Ubuntu** WSL2 distribution.
+
+After installation ensure that docker desktop is running on Windows. Then open a terminal in WSL and confirm both Docker and Docker Compose work:
+
+```bash
+docker version
+docker compose version
+```
+
+If Ubuntu doesn't recognize the command, open the Docker Desktop app → **Settings** → **Resources** → **WSL integration** and enable integration with additional distros. If it still doesn't work, see [Troubleshooting](#troubleshooting) below.
+
+#### Open the AeroSAE2027 repo in VSCode
+
+Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AeroSAE2027 repo in VSCode.
+
+Personally, I like to do this using the terminal:
+
+```bash
+cd ~/git/AeroSAE2027
+code .  # 'code' means VSCode, and we supply '.' as the current directory
+        # for the location we want to open VSCode into
+```
+
+We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
+
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
+
+After accepting the prompt the docker image will begin downloading. The entire process of opening the container should take 10 $-$ 15 minutes.
+
+Once you see `Starting Micro XRCE Agent...` in the terminal, the container is open. Verify everything's actually working by running this in a **new** integrated terminal (`Ctrl + Shift + \``):
+
+```bash
+pwd
+echo $AMENT_PREFIX_PATH
+ls -ld ~/PX4-Autopilot
+which register-python-argcomplete
+```
+
+The output should look something like this:
+
+```bash
+qadt ➜ ~/AeroSAE2027 (main) $ pwd
+/home/qadt/AeroSAE2027
+qadt ➜ ~/AeroSAE2027 (main) $ echo $AMENT_PREFIX_PATH
+/opt/ros/jazzy
+qadt ➜ ~/AeroSAE2027 (main) $ ls -ld ~/PX4-Autopilot
+drwxr-xr-x 1 qadt qadt 4096 Aug  8 22:58 /home/qadt/PX4-Autopilot
+qadt ➜ ~/AeroSAE2027 (main) $ which register-python-argcomplete
+/usr/bin/register-python-argcomplete
+qadt ➜ ~/AeroSAE2027 (main) $
+```
+
+---
+
+### Setup - Native Linux
+
+*This project is developed and built inside Docker containers running on **Linux** with the help of VSCode's dev containers extension. Currently, the only linux distro this setup has been verified and tested on is **Ubuntu**.*
+
+For installing Linux-Ubuntu, you are recommended to use **24.04** for default x11 rendering support (this is due to our container running Ubuntu 24.04 in which GUI apps mainly support x11, not wayland - namely Gazebo). Note that even on Wayland-based hosts (increasingly the default on newer Ubuntu releases), the devcontainer still works via XWayland — see `.devcontainer/initialize.sh`. I recommend choosing a minimal installation of Ubuntu when first installing from USB media and storage space of at least **96GB**. If installing alongside windows (i.e. Dual Boot), make sure to select **Install alongside Windows Boot Manager** - it the easiest this way. As with all Linux setup, you will have to select a PC name, username, and password. For a PC, I prefer the form `[firstName]-Ubuntu` (`anthony-Ubuntu`), and for username I prefer `[firstInitial][lastName]` (`abotticchio`) and choose an easy to type password.
+
+After successfully installing Ubuntu, on reboot, open your BIOS settings and **set ubuntu to the top of the boot order** (above windows). Don't worry too much about this as you'll be able to select windows when booting into ubuntu from the GRUB boot menu. Then save changes and exit (usually by pressing F10) and boot into Ubuntu.
+
+*There is no use of Docker Desktop on Linux machines. Instead, Docker recommends to use its own docker engine (no GUI).*
+
+Generally, its a good idea to run `sudo apt upgrade` after installing a new OS:
+
+```bash
+sudo apt update && sudo apt upgrade -y # '-y' auto accepts all upgrades
+```
+
+The development workflow is:
+
+1. **Open development container inside of VSCode.**
+2. **Build and run code inside of said development container**
+3. **Use Git on Linux** for source control.
+
+
+#### Install Git
+
+For Linux-Ubuntu, we’ll use its package manager **apt**, the package manager for Ubuntu distros, to install Git and other development tools.
+
+To install Git, press the windows key and type in **terminal** into the search bar to open the terminal application. Enter the following:
+
+```bash
+sudo apt update && sudo apt install git -y
+```
+
+#### Make an SSH Key
+
+First, generate a new SSH key pair:
+
+```bash
+ssh-keygen
+```
+
+When prompted to **"Enter a file in which to save the key",** just press Enter (3 times) to accept the default path:
+
+```bash
+~/.ssh/id_ed25519
+```
+
+Now, let’s copy your **public key** so you can add it to GitHub. Run:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+This will print a line starting with `ssh-ed25519`. **Copy that entire line.**
+
+Then:
+
+1. Go to Go to your GitHub profile &rarr; **Settings** &rarr; **SSH and GPG Keys** &rarr; **New SSH Key**
+2. Give it a recognizable title (e.g. “Ubuntu Laptop”)
+3. Paste your key into the **Key** field
+4. Click **Add SSH key**
+
+Finally, test your connection to GitHub:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see:
+
+```bash
+Hi [username]! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+If you see this, then you're good to go!
+
+
+#### Clone the Repository
+
+First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
+
+Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH with `git clone <ssh_url>`. Your commands should look like this bellow:
+
+```bash
+cd ~
+mkdir git
+cd git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
+```
+
+If you’re cloning via SSH for the first time, you’ll be asked to confirm the connection — type **Yes** when prompted.
+
+#### Run the `setupLinux.sh` script
+
+Inside the AeroSAE2027 repo, navigate to the scripts directory and run the `setupLinux.sh` script. This will install all required software on Linux machines including Docker, VSCode and its necessary extensions, and QGroundControl.
+
+```bash
+cd ~/git/AeroSAE2027/scripts
+./setupLinux.sh
+```
+
+Next, reboot your computer and confirm Docker installed correctly:
+
+```bash
+docker version
+docker compose version
+```
+
+#### Open the AeroSAE2027 repo in VSCode
+
+Open VSCode in the repo:
+
+```bash
+cd ~/git/AeroSAE2027
+code .
+```
+
+You should see a prompt asking to **Reopen in Container** — select yes. If you do not, trigger the same action from the command palette (`Ctrl + Shift + P`) with `>Dev Containers: Rebuild and Reopen in Container`. The docker image will begin downloading; the entire process should take 10 $-$ 15 minutes.
+
+Once you see `Starting Micro XRCE Agent...` in the terminal, the container is open. Verify everything's actually working by running this in a **new** integrated terminal (`Ctrl + Shift + \``):
+
+```bash
+pwd
+echo $AMENT_PREFIX_PATH
+ls -ld ~/PX4-Autopilot
+which register-python-argcomplete
+```
+
+The output should look the same as shown under [Setup - Windows](#setup---windows) above, just with your own username.
+
+---
+
+### Setup - MacOS
+
+*This project is developed and built inside Docker containers running on **MacOS** with the help of VSCode's dev containers extension. We currently do not use an other VMs or containers other than what is developed in-house and used inside of VSCode's dev containers extension.*
+
+The development workflow is:
+
+1. **Run Docker Desktop.**
+2. **Open development container inside of VSCode.**
+3. **Build and run code inside of said development container**
+4. **Use Git on MacOS** for source control.
+
+#### Install Homebrew
+
+For macOS, we’ll use **Homebrew**, the package manager for Mac, to install Git and other development tools.
+
+To install Homebrew, open your **Terminal** (press `Cmd + Space`, type “Terminal”, and hit Enter) and run the following command:
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Once installed, add Homebrew to your shell's PATH. For example:
+
+```bash
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+```
+
+You can verify Homebrew is installed correctly with:
+
+```bash
+brew --version
+```
+
+#### Install Git with Homebrew
+
+You want git available in your MacOS terminal so you can clone our AeroSAE2027 repo. Now that Homebrew is installed, user it to install Git:
+
+```bash
+brew install git
+```
+
+Verify by entering the following:
+
+```bash
+git --version # You should see output from this command
+```
+
+#### Make an SSH Key
+
+Now that Git is installed, let’s create an SSH key so you can securely authenticate with GitHub without typing your password every time.
+
+First, generate a new SSH key pair:
+
+```bash
+ssh-keygen
+```
+
+When prompted to **"Enter a file in which to save the key",** just press Enter (3 times) to accept the default path:
+
+```bash
+~/.ssh/id_ed25519
+```
+
+Now, let’s copy your **public key** so you can add it to GitHub. Run:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+This will print a line starting with `ssh-ed25519`. **Copy that entire line.**
+
+Then:
+
+1. Go to Go to your GitHub profile &rarr; **Settings** &rarr; **SSH and GPG Keys** &rarr; **New SSH Key**
+2. Give it a recognizable title (e.g. “Mac Laptop”)
+3. Paste your key into the **Key** field
+4. Click **Add SSH key**
+
+Finally, test your connection to GitHub:
+
+```bash
+ssh -T git@github.com
+```
+
+You should see:
+
+```bash
+Hi [username]! You've successfully authenticated, but GitHub does not provide shell access.
+```
+
+If you see this, then you're good to go!
+
+#### Clone the Repository
+
+Inside your **home directory** (`~`). This is where you'll keep the AeroSAE2027 repository and any others you clone in the future.
+
+First navigate to your home directory with `cd` or `cd ~` (using `cd` allows you to navigate directories, i.e `cd ~`), and make a `git` directory using `mkdir git` (using `mkdir` allows you to make directories, i.e `mkdir git`).
+
+Then navigate into your git directory (`cd ~/git`) and clone the repo using SSH with `git clone <ssh_url>`. Your commands should look like this bellow:
+
+```bash
+cd ~
+mkdir git
+cd git
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git
+```
+
+If you’re cloning via SSH for the first time, you’ll be asked to confirm the connection — type **Yes** when prompted.
+
+#### Install Docker Desktop
+
+Download and install [Docker Desktop for MacOS](https://docs.docker.com/desktop/setup/install/mac-install/). Docker Desktop allows you to run containers locally and integrates directly with VSCode.
+
+After installation:
+
+- Make sure Docker Desktop is running (you should see the whale icon in your menu bar)
+- Open a new terminal and verify Docker and Docker Compose both work:
+
+```bash
+docker version
+docker compose version
+```
+
+If Docker commands don’t work immediately, see [Troubleshooting](#troubleshooting) below.
+
+#### Open the AeroSAE2027 repo in VSCode
+
+Now that Docker, VSCode, and Git are installed. We can now start pulling the docker container using the VSCode Dev Containers extension. We do this by opening the AeroSAE2027 repo in VSCode.
+
+Personally, I like to do this using the terminal:
+
+```bash
+cd ~/git/AeroSAE2027
+code .  # 'code' means VSCode, and we supply '.' as the current directory
+        # for the location we want to open VSCode into
+```
+
+We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
+
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
+
+After accepting the prompt the docker image will begin downloading. The entire process of opening the container should take 10 $-$ 15 minutes.
+
+After the container is open. **RESTART YOUR COMPUTER** to configure XQuartz (an application I installed onto your computer as part of the `initialize.sh` script). After this, it should be good to go..
+
+Once you see `Starting Micro XRCE Agent...` in the terminal, the container is open. Verify everything's actually working by running this in a **new** integrated terminal (`Cmd + Shift + \``):
+
+```bash
+pwd
+echo $AMENT_PREFIX_PATH
+ls -ld ~/PX4-Autopilot
+which register-python-argcomplete
+```
+
+The output should look the same as shown under [Setup - Windows](#setup---windows) above, just with your own username.
+
+---
+
+## Running the Sim
+
 1. Build the ROS workspace (takes a few minutes the first time, mainly compiling PX4's message definitions):
    ```bash
    cd ~/AeroSAE2027/ros_ws
@@ -68,3 +534,9 @@ Hey! Want to get our team's dev environment for this year's QADT season kicks of
    ./scripts/launchQGC.sh
    ```
 4. Once QGC shows **"Ready"** next to the logo (top-left), try arming and taking off from its UI. If the drone lifts off in the Gazebo window, that's a full pass!
+
+---
+
+## Troubleshooting
+
+Reference the [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki) for common issues. If your issue is not here, reach out to a manager.
