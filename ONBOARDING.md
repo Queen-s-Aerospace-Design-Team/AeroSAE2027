@@ -27,11 +27,16 @@ git checkout -b onboarding_YOURFIRSTNAME_YOURLASTNAME
 Onboarding branches must use this naming format so they are distinguishable from project
 branches. Replace with your first and last name.
 
-Open your branch in VS Code using this command: 
+After creating your branch, switch to the branch and open the code.
 ```bash
-code .
+git switch onboarding_YOURFIRSTNAME_YOURLASTNAME #your branch name
 ```
-When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
+
+Open the directory in VSCode after switching to your branch using this command: 
+```bash
+code . #opens the directory in VSCode
+```
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Ctrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
 ## 2. Build a ROS 2 Publisher and Subscriber
 
