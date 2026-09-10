@@ -25,7 +25,14 @@ git checkout -b onboarding_YOURFIRSTNAME_YOURLASTNAME
 ```
 
 Onboarding branches must use this naming format so they are distinguishable from project
-branches. Replace with your first and last name
+branches. Replace with your first and last name.
+
+Open your branch in VS Code using this command: 
+```bash
+code .
+```
+
+In the bottom right, when prompted, click "Reopen in container" to be in the dev environment. 
 
 ## 2. Build a ROS 2 Publisher and Subscriber
 
