@@ -15,27 +15,24 @@ and cloning the repository. If you need help with the development environment, f
 contains additional learning resources and troubleshooting information.
 
 ## 1. Create an Onboarding Branch
+Navigate to the repo in Ubuntu
+```bash
+cd git/AeroSAE2027
+```
 
-From the repository, create a branch using your first and last name:
-
+From the repository, create a branch using your **first and last name**:
 ```bash
 git checkout main
 git pull origin main
 git checkout -b onboarding_YOURFIRSTNAME_YOURLASTNAME
 ```
 
-Onboarding branches must use this naming format so they are distinguishable from project
-branches. Replace with your first and last name.
-
 After creating your branch, switch to the branch and open the code.
 ```bash
 git switch onboarding_YOURFIRSTNAME_YOURLASTNAME #your branch name
-```
-
-Open the directory in VSCode after switching to your branch using this command: 
-```bash
 code . #opens the directory in VSCode
 ```
+
 When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Ctrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
 ## 2. Build a ROS 2 Publisher and Subscriber
