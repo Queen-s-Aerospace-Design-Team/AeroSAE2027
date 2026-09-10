@@ -31,8 +31,7 @@ Open your branch in VS Code using this command:
 ```bash
 code .
 ```
-
-In the bottom right, when prompted, click "Reopen in container" to be in the dev environment. 
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
 ## 2. Build a ROS 2 Publisher and Subscriber
 
