@@ -37,9 +37,11 @@ code --install-extension ms-azuretools.vscode-docker
 
 ---
 #### Select your OS below
-[Windows](#setup---windows)
-[Native Linux](#setup---native-linux)
-[macOS](#setup---macos)
+[Windows](#setup---windows) \
+[Native Linux](#setup---native-linux) \
+[macOS](#setup---macos) \
+
+---
 
 ### Setup - Windows
 
