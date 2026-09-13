@@ -36,6 +36,10 @@ code --install-extension ms-azuretools.vscode-docker
 ```
 
 ---
+#### Select your OS below
+[Windows](#setup---windows)
+[Native Linux](#setup---native-linux)
+[macOS](#setup---macos)
 
 ### Setup - Windows
 
@@ -357,7 +361,7 @@ The output should look the same as shown under [Setup - Windows](#setup---window
 
 ---
 
-### Setup - MacOS
+### Setup - macOS
 
 *This project is developed and built inside Docker containers running on **MacOS** with the help of VSCode's dev containers extension. We currently do not use an other VMs or containers other than what is developed in-house and used inside of VSCode's dev containers extension.*
 
@@ -469,7 +473,7 @@ If you’re cloning via SSH for the first time, you’ll be asked to confirm the
 
 #### Install Docker Desktop
 
-Download and install [Docker Desktop for MacOS](https://docs.docker.com/desktop/setup/install/mac-install/). Docker Desktop allows you to run containers locally and integrates directly with VSCode.
+Download and install [Docker Desktop for macOS](https://docs.docker.com/desktop/setup/install/mac-install/). Docker Desktop allows you to run containers locally and integrates directly with VSCode.
 
 After installation:
 
