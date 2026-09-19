@@ -9,6 +9,10 @@ This page is short on purpose, it's just here to point you the right way:
 → [SETUP.md](SETUP.md) walks you through setting up the developer environment such as: installing prerequisites, cloning the repo, getting the devcontainer running, and flying the drone in simulation.
 If you do not have a windows machine don't worry! There are instructions for MacOS and Linux users.
 
+## Starting the onboarding project?
+
+→ [ONBOARDING.md](ONBOARDING.md) contains all the information needed for the onboarding project. If you have any questions about it, don't hesitate to reach out the managers!
+
 ## Ready to contribute?
 
 → [CONTRIBUTING.md](CONTRIBUTING.md) covers the workflow such as branching, PRs, review, and what to check before you touch a Dockerfile or the ROS workspace. The main branch is protected, so every change lands through it.
