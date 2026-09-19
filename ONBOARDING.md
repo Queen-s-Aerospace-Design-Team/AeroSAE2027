@@ -17,6 +17,7 @@ contains additional learning resources and troubleshooting information.
 ## 1. Create an Onboarding Branch
 Navigate to the repo in Ubuntu
 ```bash
+cd ~
 cd git/AeroSAE2027
 ```
 

@@ -94,7 +94,8 @@ To run WSL, **press the windows key and search WSL or Ubuntu** and launch the ex
 sudo apt update && sudo apt upgrade -y
 ```
 
-It will ask you to create a **username** - I always do `abotticchio` or `[firstInitial+lastname]`. It will also prompt you to create a password - **keep this light and short!** Keep in mind, when typing in your password in a terminal, *your characters won't show on screen* but will still be valid (this is a canon experience for first time linux users).
+It will ask you to create a **username** - this can something like `[firstInitial_lastname]`.
+It will also prompt you to create a password - **keep this light and short!** Anything like your laptop or Queen's password is good enough. Keep in mind, when typing in your password in a terminal, **your characters won't show on screen** for privacy reasons. Don't worry, your characters are still being typed, just be careful. If you think you made a typo when entering your password, spam the backspace key, deleting your characters and try again.
 
 #### Install Git in WSL
 
