@@ -11,7 +11,7 @@ running software in the team's development environment. By the end, you should h
 
 Meeting 1 covers the prerequisites: your GitHub account, collaborator access, an SSH key,
 and cloning the repository. If you need help with the development environment, follow
-[SETUP.md](SETUP.md) for your operating system. The [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
+[./SETUP.md](./SETUP.md) for your operating system. The [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
 contains additional learning resources and troubleshooting information.
 
 ## 1. Create an Onboarding Branch
@@ -57,7 +57,7 @@ git push
 ```
 
 Open a pull request from your branch for practice. For the team's normal branch, commit, and review workflow, see
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[./CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## 3. Fly the Simulated Drone
 
@@ -65,7 +65,7 @@ Follow [Running the Sim](SETUP.md#running-the-sim) in `SETUP.md` to build the wo
 start Gazebo, and open QGroundControl. Use `simulateDepth.sh`; wait for the simulator to
 start, then arm and take off from QGroundControl. Gazebo will take a while to load, be patient when loading it for the first time
 
-If you get stuck, check [SETUP.md](SETUP.md), [CONTRIBUTING.md](CONTRIBUTING.md), and the
+If you get stuck, check [./SETUP.md](./SETUP.md), [./CONTRIBUTING.md](./CONTRIBUTING.md), and the
 [GitHub Wiki](https://github.com/Queen-s-Aerospace-Design-Team/AeroSAE2027/wiki)
 
 If you have any questions, do not hesitate to reach out the managers! We are here to help!
