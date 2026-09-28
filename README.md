@@ -29,6 +29,6 @@ Questions that aren't answered by any of the above? Reach out to a manager!
 
 ## Software Executive Team (2026/27)
 
-- **Ben Roytblat** $-$ *Software Director*
-- **Jacob Wong** $-$ *Autonomy Manager*
-- **Liam Shannon** $-$ *Perception Manager*
+- **Ben Roytblat** $-$ *Director*
+- **Jacob Wong** $-$ *Manager*
+- **Liam Shannon** $-$ *Manager*
