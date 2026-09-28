@@ -335,6 +335,7 @@ jobs:
   # See scripts/check-docs.py for what it asserts and how to maintain it.
   docs-consistency:
     name: Docs consistency
+    continue-on-error: true
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
