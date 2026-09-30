@@ -3,9 +3,9 @@
 This project is designed to help new software members become comfortable creating and
 running software in the team's development environment. By the end, you should have:
 
-- created a small ROS 2 package with a publisher and subscriber;
-- built and run your code inside the dev container; and
-- launched the simulator and watched the drone fly in QGroundControl and Gazebo.
+- Created a small ROS 2 package with a publisher and subscriber;
+- Built and run your code inside the dev container;
+- Launched the simulator and watched the drone fly in QGroundControl and Gazebo.
 
 ## Before You Start
 
