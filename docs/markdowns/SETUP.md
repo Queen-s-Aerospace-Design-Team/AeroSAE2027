@@ -3,7 +3,7 @@ Hey! This document outlines the setup for the team's dev environment for this ye
 
 #### Accept Your GitHub Collaborator Invite
 
-You'll get a GitHub collaborator invite for `Queen-s-Aerospace-Design-Team/AeroSAE2027` — accept it before going any further (check your email, or https://github.com/notifications).
+You'll get a GitHub collaborator invite for `Queen-s-Aerospace-Design-Team/AeroSAE2027`, accept it before going any further (check your email, or https://github.com/notifications).
 
 #### Install VSCode
 
