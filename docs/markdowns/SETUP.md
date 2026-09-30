@@ -237,7 +237,7 @@ qadt ➜ ~/AeroSAE2027 (main) $
 
 *This project is developed and built inside Docker containers running on **Linux** with the help of VSCode's dev containers extension. Currently, the only linux distro this setup has been verified and tested on is **Ubuntu**.*
 
-For installing Linux-Ubuntu, we are using **24.04** for default x11 rendering support (this is due to our container running Ubuntu 24.04 in which GUI apps mainly support x11, not wayland - namely Gazebo). Note that even on Wayland-based hosts (increasingly the default on newer Ubuntu releases), the devcontainer still works via XWayland, see `.devcontainer/initialize.sh`. I recommend choosing a minimal installation of Ubuntu when first installing from USB media and storage space of at least **96GB**. If installing alongside windows (i.e. Dual Boot), make sure to select **Install alongside Windows Boot Manager** - it is easiest this way. As with all Linux setups, you will have to select a PC name, username, and password. For a PC, I prefer the form `[firstName]-Ubuntu` (`Bob-Ubuntu`), and for username I prefer `[firstName][lastName]` (`bobjones`) and choose an easy to type password.
+For installing Linux-Ubuntu, we are using **24.04** for default x11 rendering support (this is due to our container running Ubuntu 24.04 in which GUI apps mainly support x11, not wayland - namely Gazebo). Note that even on Wayland-based hosts (increasingly the default on newer Ubuntu releases), the devcontainer still works via XWayland, see `.devcontainer/initialize.sh`. I recommend choosing a minimal installation of Ubuntu when first installing from USB media and storage space of at least **96GB**. If installing alongside windows (i.e. Dual Boot), make sure to select **Install alongside Windows Boot Manager** - it is easiest this way. As with all Linux setups, you will have to select a PC name, username, and password. For a PC, we prefer the form `[firstName]-Ubuntu` (`Bob-Ubuntu`), and for username we prefer `[firstName][lastName]` (`bobjones`) and choose an easy to type password.
 
 After successfully installing Ubuntu, on reboot, open your BIOS settings and **set ubuntu to the top of the boot order** (above windows). Don't worry too much about this as you'll be able to select windows when booting into ubuntu from the GRUB boot menu. Then save changes and exit (usually by pressing F10) and boot into Ubuntu.
 
@@ -351,7 +351,7 @@ cd ~/git/AeroSAE2027
 code .
 ```
 
-You should see a prompt asking to **Reopen in Container** — select yes. If you do not, trigger the same action from the command palette (`Ctrl + Shift + P`) with `>Dev Containers: Rebuild and Reopen in Container`. The docker image will begin downloading; the entire process should take 10 $-$ 15 minutes.
+You should see a prompt asking to **Reopen in Container** — select yes. If you do not, trigger the same action from the command palette (`Ctrl + Shift + P`) with `>Dev Containers: Rebuild and Reopen in Container`. The docker image will begin downloading; the entire process should take 10 - 15 minutes.
 
 Once you see `Starting Micro XRCE Agent...` in the terminal, the container is open. Verify everything's actually working by running this in a **new** integrated terminal (`Ctrl + Shift + \``):
 
