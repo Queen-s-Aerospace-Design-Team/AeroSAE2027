@@ -202,7 +202,7 @@ code .  # 'code' means VSCode, and we supply '.' as the current directory
 
 We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
 
-When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Ctrl + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
 After accepting the prompt the docker image will begin downloading. The entire process of opening the container should take 10 $-$ 15 minutes.
 
@@ -233,9 +233,11 @@ qadt ➜ ~/AeroSAE2027 (main) $
 
 ### Setup - Native Linux
 
+**We recommend setting up Native Linux with one of the managers for a smooth set up. Do not hesitate to as Liam and Jacob if you would like to set up Linux as a secondary operating system!**
+
 *This project is developed and built inside Docker containers running on **Linux** with the help of VSCode's dev containers extension. Currently, the only linux distro this setup has been verified and tested on is **Ubuntu**.*
 
-For installing Linux-Ubuntu, you are recommended to use **24.04** for default x11 rendering support (this is due to our container running Ubuntu 24.04 in which GUI apps mainly support x11, not wayland - namely Gazebo). Note that even on Wayland-based hosts (increasingly the default on newer Ubuntu releases), the devcontainer still works via XWayland — see `.devcontainer/initialize.sh`. I recommend choosing a minimal installation of Ubuntu when first installing from USB media and storage space of at least **96GB**. If installing alongside windows (i.e. Dual Boot), make sure to select **Install alongside Windows Boot Manager** - it is easiest this way. As with all Linux setups, you will have to select a PC name, username, and password. For a PC, I prefer the form `[firstName]-Ubuntu` (`anthony-Ubuntu`), and for username I prefer `[firstInitial][lastName]` (`abotticchio`) and choose an easy to type password.
+For installing Linux-Ubuntu, we are using **24.04** for default x11 rendering support (this is due to our container running Ubuntu 24.04 in which GUI apps mainly support x11, not wayland - namely Gazebo). Note that even on Wayland-based hosts (increasingly the default on newer Ubuntu releases), the devcontainer still works via XWayland, see `.devcontainer/initialize.sh`. I recommend choosing a minimal installation of Ubuntu when first installing from USB media and storage space of at least **96GB**. If installing alongside windows (i.e. Dual Boot), make sure to select **Install alongside Windows Boot Manager** - it is easiest this way. As with all Linux setups, you will have to select a PC name, username, and password. For a PC, I prefer the form `[firstName]-Ubuntu` (`Bob-Ubuntu`), and for username I prefer `[firstName][lastName]` (`bobjones`) and choose an easy to type password.
 
 After successfully installing Ubuntu, on reboot, open your BIOS settings and **set ubuntu to the top of the boot order** (above windows). Don't worry too much about this as you'll be able to select windows when booting into ubuntu from the GRUB boot menu. Then save changes and exit (usually by pressing F10) and boot into Ubuntu.
 
@@ -252,6 +254,7 @@ The development workflow is:
 1. **Open development container inside of VSCode.**
 2. **Build and run code inside of said development container**
 3. **Use Git on Linux** for source control.
+
 
 
 #### Install Git
@@ -503,7 +506,7 @@ code .  # 'code' means VSCode, and we supply '.' as the current directory
 
 We have a folder in the AeroSAE2027 repo called **`.devcontainer`**. This folder holds all the information required to create our development environment. Including the docker image (which is stored as a package on our GitHub organization), environment variables (defined in the `compose.yml` files), and other VSCode specific settings defined in the `.devcontainer/devcontainer.json` configuration file.
 
-When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Cntrl/Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
+When opening VSCode, you should see a prompt asking to **Reopen in Container**, select yes. If you do not, you can trigger the same action by opening VSCode's command palette with `Command + Shift + P` and typing `>Dev Containers: Rebuild and Reopen in Container` then selecting that option.
 
 After accepting the prompt the docker image will begin downloading. The entire process of opening the container should take 10 $-$ 15 minutes.
 
