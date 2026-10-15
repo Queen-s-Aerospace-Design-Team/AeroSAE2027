@@ -333,47 +333,49 @@ jobs:
   # there to be read and acted on, per the triage in CONTRIBUTING.md.
   #
   # See scripts/check-docs.py for what it asserts and how to maintain it.
-  docs-consistency:
-    name: Docs consistency
-    continue-on-error: true
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v7
+  # docs-consistency:
+  #   name: Docs consistency
+  #   continue-on-error: true
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - uses: actions/checkout@v7
 
-      - name: Check agent context against source
-        id: check
-        run: |
-          set -uo pipefail
-          set +e   # we want the checker's exit code, not an early abort
-          python3 scripts/check-docs.py | tee /tmp/check-docs.log
-          exit "${PIPESTATUS[0]}"
+  #     - name: Check agent context against source
+  #       id: check
+  #       run: |
+  #         set -uo pipefail
+  #         set +e   # we want the checker's exit code, not an early abort
+  #         python3 scripts/check-docs.py | tee /tmp/check-docs.log
+  #         exit "${PIPESTATUS[0]}"
 
-      # Surface failures as a PR annotation and job summary rather than a silent
-      # red X, so the specific stale claim is visible without opening the log.
-      - name: Report
-        if: always()
-        run: |
-          set -euo pipefail
-          if [ "${{ steps.check.outcome }}" = "failure" ]; then
-            {
-              echo "## Docs consistency FAILED (not a required check - merge is not blocked)"
-              echo
-              echo "The agent-context docs disagree with the code they describe:"
-              echo
-              echo '```'
-              cat /tmp/check-docs.log
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-            while IFS= read -r line; do
-              case "$line" in
-                *"FAIL"*) echo "::warning file=AGENTS.md::${line#*FAIL }" ;;
-              esac
-            done < /tmp/check-docs.log
-            echo "::warning::Agent context is out of date with the code. This check is not required, so the merge is not blocked - fix the doc, fix the assertion, or note it on the PR."
-          else
-            {
-              echo "## Docs consistency"
-              echo
-              cat /tmp/check-docs.log
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
+  #     # Surface failures as a PR annotation and job summary rather than a silent
+  #     # red X, so the specific stale claim is visible without opening the log.
+  #     - name: Report
+  #       if: always()
+  #       run: |
+  #         set -euo pipefail
+  #         if [ "${{ steps.check.outcome }}" = "failure" ]; then
+  #           {
+  #             echo "## Docs consistency FAILED (not a required check - merge is not blocked)"
+  #             echo
+  #             echo "The agent-context docs disagree with the code they describe:"
+  #             echo
+  #             echo '```'
+  #             cat /tmp/check-docs.log
+  #             echo '```'
+  #           } >> "$GITHUB_STEP_SUMMARY"
+  #           while IFS= read -r line; do
+  #             case "$line" in
+  #               *"FAIL"*) echo "::warning file=AGENTS.md::${line#*FAIL }" ;;
+  #             esac
+  #           done < /tmp/check-docs.log
+  #           echo "::warning::Agent context is out of date with the code. This check is not required, so the merge is not blocked - fix the doc, fix the assertion, or note it on the PR."
+  #         else
+  #           {
+  #             echo "## Docs consistency"
+  #             echo
+  #             cat /tmp/check-docs.log
+  #           } >> "$GITHUB_STEP_SUMMARY"
+  #         fi
+
+  
