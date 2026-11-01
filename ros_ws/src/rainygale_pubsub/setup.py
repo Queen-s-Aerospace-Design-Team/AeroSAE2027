@@ -15,8 +15,8 @@ setup(
     zip_safe=True,
     maintainer='qadt',
     maintainer_email='rainygale@protonmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    description='A package satisfying the requirements of the QADT onboarding project',
+    license='Apache 2.0',
     extras_require={
         'test': [
             'pytest',
@@ -24,7 +24,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'publisher = rainygale_pubsub.publisher:main'
+            'talker = py_pubsub.publisher_member_function:main',
         ],
     },
 )
