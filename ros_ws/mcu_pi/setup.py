@@ -24,6 +24,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
+
+            'mission_node = mcu_pi.mission_node:main',
+            'serial_bridge_node = mcu_pi.serial_bridge_node:main',
+
         ],
     },
 )
