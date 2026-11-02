@@ -1,0 +1,4 @@
+# Placeholder. Remaining parameters are added with the node implementation.
+serial_bridge:
+  ros__parameters:
+    post_open_settle_s: 2.0
