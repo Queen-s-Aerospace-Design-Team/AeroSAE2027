@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_name = 'mcu_pi'
+package_name = 'payload_ctrl'
 
 setup(
     name=package_name,
@@ -24,10 +24,6 @@ setup(
     },
     entry_points={
         'console_scripts': [
-
-            'mission_node = mcu_pi.mission_node:main',
-            'serial_bridge_node = mcu_pi.serial_bridge_node:main',
-
         ],
     },
 )
