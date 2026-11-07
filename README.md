@@ -9,6 +9,18 @@ This page is short on purpose, it's just here to point you the right way:
 → [SETUP.md](docs/markdowns/SETUP.md) walks you through setting up the developer environment such as: installing prerequisites, cloning the repo, getting the devcontainer running, and flying the drone in simulation.
 If you do not have a windows machine don't worry! There are instructions for MacOS and Linux users.
 
+## Just want to run the simulator?
+
+Once Docker and VS Code are installed ([SETUP.md](docs/markdowns/SETUP.md)):
+
+```bash
+git clone git@github.com:Queen-s-Aerospace-Design-Team/AeroSAE2027.git && code AeroSAE2027
+# In VS Code: "Reopen in Container", then open a terminal (Ctrl/Cmd + Shift + `)
+./sim/launch.sh            # --headless for no Gazebo window, --world aeac for the team world
+```
+
+That starts PX4 SITL, Gazebo and the ROS 2 ↔ Gazebo bridge. **One Ctrl-C stops all of it.** To check it starts and shuts down cleanly: `./sim/smoke_test.sh`.
+
 ## Starting the onboarding project?
 
 → [ONBOARDING.md](docs/markdowns/ONBOARDING.md) contains all the information needed for the onboarding project. If you have any questions about it, don't hesitate to reach out the managers!
