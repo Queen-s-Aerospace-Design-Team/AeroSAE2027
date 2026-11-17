@@ -544,6 +544,14 @@ The output should look the same as shown under [Setup - Windows](#setup---window
    ```
 4. Once QGC shows **"Ready"** next to the logo (top-left), try arming and taking off from its UI. If the drone lifts off in the Gazebo window, that's a full pass!
 
+5. When you are done with the simulation, stop it before starting another one. If a session is left open, `simulateDepth.sh` reattaches to it instead of starting fresh.
+   1. In the PX4 pane (top left), type `shutdown` at the `pxh>` prompt, or press **Ctrl+C**. This stops PX4 and Gazebo.
+   2. In any terminal inside the container, run:
+      ```bash
+      tmux kill-server
+      ```
+      This closes every tmux pane, including RViz and the image viewer.
+
 ---
 
 ## Troubleshooting
