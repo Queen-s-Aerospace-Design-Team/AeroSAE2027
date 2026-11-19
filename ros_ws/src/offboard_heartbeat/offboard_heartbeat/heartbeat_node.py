@@ -45,7 +45,7 @@ class OffboardHeartbeatNode(Node):
         self.status_sub = self.create_subscription(
             VehicleStatus, '/fmu/out/vehicle_status_v1', self.status_callback, qos_profile)
         self.position_sub = self.create_subscription(
-            VehicleLocalPosition, '/fmu/out/vehicle_local_position',
+            VehicleLocalPosition, '/fmu/out/vehicle_local_position_v1',
             self.position_callback, qos_profile)
 
         self.paused = True
@@ -122,10 +122,15 @@ class OffboardHeartbeatNode(Node):
             # Offboard never causes a jump. The mission clock does not advance.
             if self.position is not None:
                 self.cmd = list(self.position)
-        elif self.cmd is not None:
+        elif self.cmd is not None and not self.timed_out:
             self.active_s += dt
             self.cmd = self.slew_toward_target(self.cmd, dt)
             self.check_mission()
+
+        # No valid position yet: publish nothing, so PX4 cannot enter Offboard
+        # (it needs the heartbeat) and we never stream NaN setpoints.
+        if self.cmd is None:
+            return
 
         # 1. Heartbeat: OffboardControlMode must keep arriving or PX4 drops Offboard.
         ocm = OffboardControlMode()
@@ -137,10 +142,10 @@ class OffboardHeartbeatNode(Node):
         ocm.body_rate = False
         self.offboard_pub.publish(ocm)
 
-        # 2. Setpoint. With no valid position yet we send NaN, which PX4 refuses to fly.
+        # 2. Setpoint.
         sp = TrajectorySetpoint()
         sp.timestamp = timestamp_us
-        sp.position = self.cmd if self.cmd is not None else NAN3
+        sp.position = self.cmd
         sp.velocity = NAN3
         sp.acceleration = NAN3
         sp.jerk = NAN3
