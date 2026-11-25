@@ -45,7 +45,7 @@ class OffboardHeartbeatNode(Node):
         self.status_sub = self.create_subscription(
             VehicleStatus, '/fmu/out/vehicle_status_v1', self.status_callback, qos_profile)
         self.position_sub = self.create_subscription(
-            VehicleLocalPosition, '/fmu/out/vehicle_local_position_v1',
+            VehicleLocalPosition, '/fmu/out/vehicle_local_position',
             self.position_callback, qos_profile)
 
         self.paused = True
@@ -163,7 +163,7 @@ def main(args=None):
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':
