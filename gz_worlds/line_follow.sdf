@@ -1,0 +1,1654 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <world name="line_follow">
+    <physics type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+    <scene>
+      <grid>false</grid>
+      <ambient>0.8 0.8 0.8 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>false</shadows>
+    </scene>
+    <light name="sun" type="directional">
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>-0.3 0.2 -1</direction>
+      <cast_shadows>false</cast_shadows>
+    </light>
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10.0 10.0</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="floor_visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>10.0 10.0</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.92 0.92 0.92 1</ambient>
+            <diffuse>0.92 0.92 0.92 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+    <model name="dark_tape_track">
+      <static>true</static>
+      <link name="tape">
+        <visual name="tape_000">
+          <pose>-2.750000 -1.800000 0.001 0 0 0.00000000</pose>
+          <geometry>
+            <box>
+              <size>1.504000 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_001">
+          <pose>-1.983333 -1.799110 0.001 0 0 0.05336082</pose>
+          <geometry>
+            <box>
+              <size>0.037381 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_002">
+          <pose>-1.950000 -1.795559 0.001 0 0 0.15831337</pose>
+          <geometry>
+            <box>
+              <size>0.037755 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_003">
+          <pose>-1.916667 -1.788496 0.001 0 0 0.25824019</pose>
+          <geometry>
+            <box>
+              <size>0.038477 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_004">
+          <pose>-1.883333 -1.777998 0.001 0 0 0.35062137</pose>
+          <geometry>
+            <box>
+              <size>0.039493 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_005">
+          <pose>-1.850000 -1.764180 0.001 0 0 0.43387589</pose>
+          <geometry>
+            <box>
+              <size>0.040737 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_006">
+          <pose>-1.816667 -1.747194 0.001 0 0 0.50730972</pose>
+          <geometry>
+            <box>
+              <size>0.042136 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_007">
+          <pose>-1.783333 -1.727226 0.001 0 0 0.57091034</pose>
+          <geometry>
+            <box>
+              <size>0.043616 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_008">
+          <pose>-1.750000 -1.704495 0.001 0 0 0.62510140</pose>
+          <geometry>
+            <box>
+              <size>0.045106 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_009">
+          <pose>-1.716667 -1.679249 0.001 0 0 0.67053000</pose>
+          <geometry>
+            <box>
+              <size>0.046545 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_010">
+          <pose>-1.683333 -1.651765 0.001 0 0 0.70791295</pose>
+          <geometry>
+            <box>
+              <size>0.047876 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_011">
+          <pose>-1.650000 -1.622345 0.001 0 0 0.73793923</pose>
+          <geometry>
+            <box>
+              <size>0.049054 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_012">
+          <pose>-1.616667 -1.591310 0.001 0 0 0.76121493</pose>
+          <geometry>
+            <box>
+              <size>0.050041 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_013">
+          <pose>-1.583333 -1.559001 0.001 0 0 0.77823570</pose>
+          <geometry>
+            <box>
+              <size>0.050806 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_014">
+          <pose>-1.550000 -1.525772 0.001 0 0 0.78937549</pose>
+          <geometry>
+            <box>
+              <size>0.051329 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_015">
+          <pose>-1.516667 -1.491986 0.001 0 0 0.79488330</pose>
+          <geometry>
+            <box>
+              <size>0.051594 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_016">
+          <pose>-1.483333 -1.458014 0.001 0 0 0.79488330</pose>
+          <geometry>
+            <box>
+              <size>0.051594 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_017">
+          <pose>-1.450000 -1.424228 0.001 0 0 0.78937549</pose>
+          <geometry>
+            <box>
+              <size>0.051329 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_018">
+          <pose>-1.416667 -1.390999 0.001 0 0 0.77823570</pose>
+          <geometry>
+            <box>
+              <size>0.050806 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_019">
+          <pose>-1.383333 -1.358690 0.001 0 0 0.76121493</pose>
+          <geometry>
+            <box>
+              <size>0.050041 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_020">
+          <pose>-1.350000 -1.327655 0.001 0 0 0.73793923</pose>
+          <geometry>
+            <box>
+              <size>0.049054 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_021">
+          <pose>-1.316667 -1.298235 0.001 0 0 0.70791295</pose>
+          <geometry>
+            <box>
+              <size>0.047876 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_022">
+          <pose>-1.283333 -1.270751 0.001 0 0 0.67053000</pose>
+          <geometry>
+            <box>
+              <size>0.046545 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_023">
+          <pose>-1.250000 -1.245505 0.001 0 0 0.62510140</pose>
+          <geometry>
+            <box>
+              <size>0.045106 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_024">
+          <pose>-1.216667 -1.222774 0.001 0 0 0.57091034</pose>
+          <geometry>
+            <box>
+              <size>0.043616 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_025">
+          <pose>-1.183333 -1.202806 0.001 0 0 0.50730972</pose>
+          <geometry>
+            <box>
+              <size>0.042136 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_026">
+          <pose>-1.150000 -1.185820 0.001 0 0 0.43387589</pose>
+          <geometry>
+            <box>
+              <size>0.040737 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_027">
+          <pose>-1.116667 -1.172002 0.001 0 0 0.35062137</pose>
+          <geometry>
+            <box>
+              <size>0.039493 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_028">
+          <pose>-1.083333 -1.161504 0.001 0 0 0.25824019</pose>
+          <geometry>
+            <box>
+              <size>0.038477 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_029">
+          <pose>-1.050000 -1.154441 0.001 0 0 0.15831337</pose>
+          <geometry>
+            <box>
+              <size>0.037755 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_030">
+          <pose>-1.016667 -1.150890 0.001 0 0 0.05336082</pose>
+          <geometry>
+            <box>
+              <size>0.037381 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_031">
+          <pose>-0.983333 -1.150890 0.001 0 0 -0.05336082</pose>
+          <geometry>
+            <box>
+              <size>0.037381 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_032">
+          <pose>-0.950000 -1.154441 0.001 0 0 -0.15831337</pose>
+          <geometry>
+            <box>
+              <size>0.037755 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_033">
+          <pose>-0.916667 -1.161504 0.001 0 0 -0.25824019</pose>
+          <geometry>
+            <box>
+              <size>0.038477 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_034">
+          <pose>-0.883333 -1.172002 0.001 0 0 -0.35062137</pose>
+          <geometry>
+            <box>
+              <size>0.039493 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_035">
+          <pose>-0.850000 -1.185820 0.001 0 0 -0.43387589</pose>
+          <geometry>
+            <box>
+              <size>0.040737 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_036">
+          <pose>-0.816667 -1.202806 0.001 0 0 -0.50730972</pose>
+          <geometry>
+            <box>
+              <size>0.042136 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_037">
+          <pose>-0.783333 -1.222774 0.001 0 0 -0.57091034</pose>
+          <geometry>
+            <box>
+              <size>0.043616 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_038">
+          <pose>-0.750000 -1.245505 0.001 0 0 -0.62510140</pose>
+          <geometry>
+            <box>
+              <size>0.045106 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_039">
+          <pose>-0.716667 -1.270751 0.001 0 0 -0.67053000</pose>
+          <geometry>
+            <box>
+              <size>0.046545 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_040">
+          <pose>-0.683333 -1.298235 0.001 0 0 -0.70791295</pose>
+          <geometry>
+            <box>
+              <size>0.047876 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_041">
+          <pose>-0.650000 -1.327655 0.001 0 0 -0.73793923</pose>
+          <geometry>
+            <box>
+              <size>0.049054 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_042">
+          <pose>-0.616667 -1.358690 0.001 0 0 -0.76121493</pose>
+          <geometry>
+            <box>
+              <size>0.050041 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_043">
+          <pose>-0.583333 -1.390999 0.001 0 0 -0.77823570</pose>
+          <geometry>
+            <box>
+              <size>0.050806 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_044">
+          <pose>-0.550000 -1.424228 0.001 0 0 -0.78937549</pose>
+          <geometry>
+            <box>
+              <size>0.051329 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_045">
+          <pose>-0.516667 -1.458014 0.001 0 0 -0.79488330</pose>
+          <geometry>
+            <box>
+              <size>0.051594 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_046">
+          <pose>-0.483333 -1.491986 0.001 0 0 -0.79488330</pose>
+          <geometry>
+            <box>
+              <size>0.051594 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_047">
+          <pose>-0.450000 -1.525772 0.001 0 0 -0.78937549</pose>
+          <geometry>
+            <box>
+              <size>0.051329 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_048">
+          <pose>-0.416667 -1.559001 0.001 0 0 -0.77823570</pose>
+          <geometry>
+            <box>
+              <size>0.050806 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_049">
+          <pose>-0.383333 -1.591310 0.001 0 0 -0.76121493</pose>
+          <geometry>
+            <box>
+              <size>0.050041 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_050">
+          <pose>-0.350000 -1.622345 0.001 0 0 -0.73793923</pose>
+          <geometry>
+            <box>
+              <size>0.049054 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_051">
+          <pose>-0.316667 -1.651765 0.001 0 0 -0.70791295</pose>
+          <geometry>
+            <box>
+              <size>0.047876 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_052">
+          <pose>-0.283333 -1.679249 0.001 0 0 -0.67053000</pose>
+          <geometry>
+            <box>
+              <size>0.046545 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_053">
+          <pose>-0.250000 -1.704495 0.001 0 0 -0.62510140</pose>
+          <geometry>
+            <box>
+              <size>0.045106 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_054">
+          <pose>-0.216667 -1.727226 0.001 0 0 -0.57091034</pose>
+          <geometry>
+            <box>
+              <size>0.043616 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_055">
+          <pose>-0.183333 -1.747194 0.001 0 0 -0.50730972</pose>
+          <geometry>
+            <box>
+              <size>0.042136 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_056">
+          <pose>-0.150000 -1.764180 0.001 0 0 -0.43387589</pose>
+          <geometry>
+            <box>
+              <size>0.040737 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_057">
+          <pose>-0.116667 -1.777998 0.001 0 0 -0.35062137</pose>
+          <geometry>
+            <box>
+              <size>0.039493 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_058">
+          <pose>-0.083333 -1.788496 0.001 0 0 -0.25824019</pose>
+          <geometry>
+            <box>
+              <size>0.038477 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_059">
+          <pose>-0.050000 -1.795559 0.001 0 0 -0.15831337</pose>
+          <geometry>
+            <box>
+              <size>0.037755 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_060">
+          <pose>-0.016667 -1.799110 0.001 0 0 -0.05336082</pose>
+          <geometry>
+            <box>
+              <size>0.037381 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_061">
+          <pose>0.016667 -1.800685 0.001 0 0 -0.04106269</pose>
+          <geometry>
+            <box>
+              <size>0.037361 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_062">
+          <pose>0.050000 -1.803416 0.001 0 0 -0.12219536</pose>
+          <geometry>
+            <box>
+              <size>0.037584 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_063">
+          <pose>0.083333 -1.808849 0.001 0 0 -0.20045438</pose>
+          <geometry>
+            <box>
+              <size>0.038014 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_064">
+          <pose>0.116667 -1.816925 0.001 0 0 -0.27424431</pose>
+          <geometry>
+            <box>
+              <size>0.038627 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_065">
+          <pose>0.150000 -1.827554 0.001 0 0 -0.34236532</pose>
+          <geometry>
+            <box>
+              <size>0.039387 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_066">
+          <pose>0.183333 -1.840620 0.001 0 0 -0.40403959</pose>
+          <geometry>
+            <box>
+              <size>0.040252 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_067">
+          <pose>0.216667 -1.855980 0.001 0 0 -0.45886927</pose>
+          <geometry>
+            <box>
+              <size>0.041179 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_068">
+          <pose>0.250000 -1.873466 0.001 0 0 -0.50675540</pose>
+          <geometry>
+            <box>
+              <size>0.042125 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_069">
+          <pose>0.283333 -1.892886 0.001 0 0 -0.54780572</pose>
+          <geometry>
+            <box>
+              <size>0.043047 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_070">
+          <pose>0.316667 -1.914027 0.001 0 0 -0.58225027</pose>
+          <geometry>
+            <box>
+              <size>0.043909 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_071">
+          <pose>0.350000 -1.936658 0.001 0 0 -0.61037365</pose>
+          <geometry>
+            <box>
+              <size>0.044678 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_072">
+          <pose>0.383333 -1.960531 0.001 0 0 -0.63246527</pose>
+          <geometry>
+            <box>
+              <size>0.045327 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_073">
+          <pose>0.416667 -1.985384 0.001 0 0 -0.64878549</pose>
+          <geometry>
+            <box>
+              <size>0.045833 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_074">
+          <pose>0.450000 -2.010945 0.001 0 0 -0.65954381</pose>
+          <geometry>
+            <box>
+              <size>0.046180 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_075">
+          <pose>0.483333 -2.036934 0.001 0 0 -0.66488580</pose>
+          <geometry>
+            <box>
+              <size>0.046356 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_076">
+          <pose>0.516667 -2.063066 0.001 0 0 -0.66488580</pose>
+          <geometry>
+            <box>
+              <size>0.046356 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_077">
+          <pose>0.550000 -2.089055 0.001 0 0 -0.65954381</pose>
+          <geometry>
+            <box>
+              <size>0.046180 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_078">
+          <pose>0.583333 -2.114616 0.001 0 0 -0.64878549</pose>
+          <geometry>
+            <box>
+              <size>0.045833 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_079">
+          <pose>0.616667 -2.139469 0.001 0 0 -0.63246527</pose>
+          <geometry>
+            <box>
+              <size>0.045327 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_080">
+          <pose>0.650000 -2.163342 0.001 0 0 -0.61037365</pose>
+          <geometry>
+            <box>
+              <size>0.044678 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_081">
+          <pose>0.683333 -2.185973 0.001 0 0 -0.58225027</pose>
+          <geometry>
+            <box>
+              <size>0.043909 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_082">
+          <pose>0.716667 -2.207114 0.001 0 0 -0.54780572</pose>
+          <geometry>
+            <box>
+              <size>0.043047 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_083">
+          <pose>0.750000 -2.226534 0.001 0 0 -0.50675540</pose>
+          <geometry>
+            <box>
+              <size>0.042125 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_084">
+          <pose>0.783333 -2.244020 0.001 0 0 -0.45886927</pose>
+          <geometry>
+            <box>
+              <size>0.041179 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_085">
+          <pose>0.816667 -2.259380 0.001 0 0 -0.40403959</pose>
+          <geometry>
+            <box>
+              <size>0.040252 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_086">
+          <pose>0.850000 -2.272446 0.001 0 0 -0.34236532</pose>
+          <geometry>
+            <box>
+              <size>0.039387 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_087">
+          <pose>0.883333 -2.283075 0.001 0 0 -0.27424431</pose>
+          <geometry>
+            <box>
+              <size>0.038627 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_088">
+          <pose>0.916667 -2.291151 0.001 0 0 -0.20045438</pose>
+          <geometry>
+            <box>
+              <size>0.038014 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_089">
+          <pose>0.950000 -2.296584 0.001 0 0 -0.12219536</pose>
+          <geometry>
+            <box>
+              <size>0.037584 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_090">
+          <pose>0.983333 -2.299315 0.001 0 0 -0.04106269</pose>
+          <geometry>
+            <box>
+              <size>0.037361 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_091">
+          <pose>1.016667 -2.299315 0.001 0 0 0.04106269</pose>
+          <geometry>
+            <box>
+              <size>0.037361 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_092">
+          <pose>1.050000 -2.296584 0.001 0 0 0.12219536</pose>
+          <geometry>
+            <box>
+              <size>0.037584 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_093">
+          <pose>1.083333 -2.291151 0.001 0 0 0.20045438</pose>
+          <geometry>
+            <box>
+              <size>0.038014 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_094">
+          <pose>1.116667 -2.283075 0.001 0 0 0.27424431</pose>
+          <geometry>
+            <box>
+              <size>0.038627 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_095">
+          <pose>1.150000 -2.272446 0.001 0 0 0.34236532</pose>
+          <geometry>
+            <box>
+              <size>0.039387 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_096">
+          <pose>1.183333 -2.259380 0.001 0 0 0.40403959</pose>
+          <geometry>
+            <box>
+              <size>0.040252 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_097">
+          <pose>1.216667 -2.244020 0.001 0 0 0.45886927</pose>
+          <geometry>
+            <box>
+              <size>0.041179 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_098">
+          <pose>1.250000 -2.226534 0.001 0 0 0.50675540</pose>
+          <geometry>
+            <box>
+              <size>0.042125 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_099">
+          <pose>1.283333 -2.207114 0.001 0 0 0.54780572</pose>
+          <geometry>
+            <box>
+              <size>0.043047 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_100">
+          <pose>1.316667 -2.185973 0.001 0 0 0.58225027</pose>
+          <geometry>
+            <box>
+              <size>0.043909 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_101">
+          <pose>1.350000 -2.163342 0.001 0 0 0.61037365</pose>
+          <geometry>
+            <box>
+              <size>0.044678 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_102">
+          <pose>1.383333 -2.139469 0.001 0 0 0.63246527</pose>
+          <geometry>
+            <box>
+              <size>0.045327 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_103">
+          <pose>1.416667 -2.114616 0.001 0 0 0.64878549</pose>
+          <geometry>
+            <box>
+              <size>0.045833 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_104">
+          <pose>1.450000 -2.089055 0.001 0 0 0.65954381</pose>
+          <geometry>
+            <box>
+              <size>0.046180 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_105">
+          <pose>1.483333 -2.063066 0.001 0 0 0.66488580</pose>
+          <geometry>
+            <box>
+              <size>0.046356 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_106">
+          <pose>1.516667 -2.036934 0.001 0 0 0.66488580</pose>
+          <geometry>
+            <box>
+              <size>0.046356 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_107">
+          <pose>1.550000 -2.010945 0.001 0 0 0.65954381</pose>
+          <geometry>
+            <box>
+              <size>0.046180 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_108">
+          <pose>1.583333 -1.985384 0.001 0 0 0.64878549</pose>
+          <geometry>
+            <box>
+              <size>0.045833 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_109">
+          <pose>1.616667 -1.960531 0.001 0 0 0.63246527</pose>
+          <geometry>
+            <box>
+              <size>0.045327 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_110">
+          <pose>1.650000 -1.936658 0.001 0 0 0.61037365</pose>
+          <geometry>
+            <box>
+              <size>0.044678 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_111">
+          <pose>1.683333 -1.914027 0.001 0 0 0.58225027</pose>
+          <geometry>
+            <box>
+              <size>0.043909 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_112">
+          <pose>1.716667 -1.892886 0.001 0 0 0.54780572</pose>
+          <geometry>
+            <box>
+              <size>0.043047 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_113">
+          <pose>1.750000 -1.873466 0.001 0 0 0.50675540</pose>
+          <geometry>
+            <box>
+              <size>0.042125 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_114">
+          <pose>1.783333 -1.855980 0.001 0 0 0.45886927</pose>
+          <geometry>
+            <box>
+              <size>0.041179 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_115">
+          <pose>1.816667 -1.840620 0.001 0 0 0.40403959</pose>
+          <geometry>
+            <box>
+              <size>0.040252 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_116">
+          <pose>1.850000 -1.827554 0.001 0 0 0.34236532</pose>
+          <geometry>
+            <box>
+              <size>0.039387 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_117">
+          <pose>1.883333 -1.816925 0.001 0 0 0.27424431</pose>
+          <geometry>
+            <box>
+              <size>0.038627 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_118">
+          <pose>1.916667 -1.808849 0.001 0 0 0.20045438</pose>
+          <geometry>
+            <box>
+              <size>0.038014 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_119">
+          <pose>1.950000 -1.803416 0.001 0 0 0.12219536</pose>
+          <geometry>
+            <box>
+              <size>0.037584 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_120">
+          <pose>1.983333 -1.800685 0.001 0 0 0.04106269</pose>
+          <geometry>
+            <box>
+              <size>0.037361 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_121">
+          <pose>2.500000 -1.800000 0.001 0 0 0.00000000</pose>
+          <geometry>
+            <box>
+              <size>1.004000 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+        <visual name="tape_122">
+          <pose>3.000000 0.300000 0.001 0 0 1.57079633</pose>
+          <geometry>
+            <box>
+              <size>4.204000 0.025 0.001</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.015 0.015 0.015 1</ambient>
+            <diffuse>0.015 0.015 0.015 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>
